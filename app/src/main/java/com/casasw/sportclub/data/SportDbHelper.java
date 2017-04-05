@@ -44,7 +44,7 @@ public class SportDbHelper extends SQLiteOpenHelper {
 
         final String SQL_CREATE_TEAM_TABLE = "CREATE TABLE " + SportContract.TeamEntry.TABLE_NAME + " (" +
                 SportContract.TeamEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
-                SportContract.TeamEntry.COLUMN_NAME + " TEXT NOT NULL, " +
+                SportContract.TeamEntry.COLUMN_TEAM_NAME + " TEXT NOT NULL, " +
                 SportContract.TeamEntry.COLUMN_ADM_ID + " INTEGER NOT NULL, " +
                 SportContract.TeamEntry.COLUMN_CITY + " TEXT NOT NULL, " +
                 SportContract.TeamEntry.COLUMN_RATING + " REAL NOT NULL, " +
@@ -58,7 +58,7 @@ public class SportDbHelper extends SQLiteOpenHelper {
 
         final String SQL_CREATE_VENUE_TABLE = "CREATE TABLE " + SportContract.VenueEntry.TABLE_NAME + " (" +
                 SportContract.VenueEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                SportContract.VenueEntry.COLUMN_NAME + " TEXT NOT NULL, " +
+                SportContract.VenueEntry.COLUMN_VENUE_NAME + " TEXT NOT NULL, " +
                 SportContract.VenueEntry.COLUMN_RATING + " REAL NOT NULL, " +
                 SportContract.VenueEntry.COLUMN_LAT_COORD + " REAL NOT NULL, " +
                 SportContract.VenueEntry.COLUMN_LONG_COORD + " REAL NOT NULL, " +
@@ -104,7 +104,7 @@ public class SportDbHelper extends SQLiteOpenHelper {
 
         final String SQL_CREATE_MATCH_TABLE = "CREATE TABLE " + SportContract.MatchEntry.TABLE_NAME + " (" +
                 SportContract.MatchEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                SportContract.MatchEntry.COLUMN_NAME + " TEXT NOT NULL, " +
+                SportContract.MatchEntry.COLUMN_MATCH_NAME + " TEXT NOT NULL, " +
                 SportContract.MatchEntry.COLUMN_DATE + " INTEGER NOT NULL, " +
                 SportContract.MatchEntry.COLUMN_TEAM_ID + " INTEGER NOT NULL, " +
                 SportContract.MatchEntry.COLUMN_VENUE_ID + " INTEGER NOT NULL, " +

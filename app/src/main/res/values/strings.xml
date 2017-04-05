@@ -1,25 +1,22 @@
 <resources>
-    <string name="app_name">Sport Club</string>
+    <string name="app_name" translatable="false">Sport Club</string>
+    <string name="logo_description" translatable="false">Sport Club Logo</string>
 
     <!-- Strings related to login -->
-    <string name="prompt_email">Email</string>
-    <string name="prompt_password">Password (optional)</string>
-    <string name="action_sign_in">Sign in or register</string>
-    <string name="action_sign_in_short">Sign in</string>
-    <string name="error_invalid_email">This email address is invalid</string>
-    <string name="error_invalid_password">This password is too short</string>
-    <string name="error_incorrect_password">This password is incorrect</string>
-    <string name="error_field_required">This field is required</string>
-    <string name="permission_rationale">"Contacts permissions are needed for providing email
-        completions."
-    </string>
-    <string name="title_activity_main">MainActivity</string>
+    <string name="title_activity_main">Main Activity</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
     <string name="action_settings">Settings</string>
-    <string name="title_activity_profile">ProfileActivity</string>
-    <string name="title_activity_team">TeamActivity</string>
-    <string name="title_activity_match">MatchActivity</string>
+    <string name="title_activity_profile">Profile Activity</string>
+    <string name="title_activity_team">Team Activity</string>
+    <string name="title_activity_match">Match Activity</string>
+
+    <string name="facebook_app_id" translatable="false">248740825588294</string>
+
+    <string name="version">1.0</string>
+    <string name="help_text">Help</string>
+
+
 </resources>

@@ -90,7 +90,7 @@ public class SportContract {
 
         public static final String TABLE_NAME = "team";
 
-        public static final String COLUMN_NAME = "name";
+        public static final String COLUMN_TEAM_NAME = "team_name";
 
         /* Player foreign key */
         public static final String COLUMN_ADM_ID = "adm_id";
@@ -126,7 +126,7 @@ public class SportContract {
 
         public static final String TABLE_NAME = "venue";
 
-        public static final String COLUMN_NAME = "name";
+        public static final String COLUMN_VENUE_NAME = "venue_name";
 
         public static final String COLUMN_RATING = "rating";
         
@@ -225,8 +225,7 @@ public class SportContract {
          */
     }
     /**
-     * Inner class that defines the table contents of player_team table
-     * This table stores the relation between player and teams
+     * Inner class that defines the table contents of match table
      **/
     public static final class MatchEntry implements BaseColumns {
         public static final Uri CONTENT_URI =
@@ -247,7 +246,7 @@ public class SportContract {
 
         public static final String TABLE_NAME = "match";
 
-        public static final String COLUMN_NAME = "name";
+        public static final String COLUMN_MATCH_NAME = "name";
 
         public static final String COLUMN_DATE = "date";
 
@@ -266,8 +265,8 @@ public class SportContract {
     }
 
     /**
-     * Inner class that defines the table contents of player_team table
-     * This table stores the relation between player and teams
+     * Inner class that defines the table contents of friends table
+     * This table stores the relation between players
      **/
     public static final class FriendsEntry implements BaseColumns {
         public static final Uri CONTENT_URI =
