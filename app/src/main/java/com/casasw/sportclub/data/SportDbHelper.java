@@ -15,7 +15,7 @@ import com.casasw.sportclub.ui.BuildConfig;
 public class SportDbHelper extends SQLiteOpenHelper {
     private static final String TAG = SportDbHelper.class.getSimpleName();
 
-    private static final int DATABASE_VERSION = 2;
+    private static final int DATABASE_VERSION = 1;
 
     static final String DATABASE_NAME = "sportclub.db";
 
@@ -35,7 +35,8 @@ public class SportDbHelper extends SQLiteOpenHelper {
                 SportContract.PlayerEntry.COLUMN_WEIGHT + " REAL NOT NULL, " +
                 SportContract.PlayerEntry.COLUMN_CITY + " TEXT NOT NULL, " +
                 SportContract.PlayerEntry.COLUMN_RATING + " REAL NOT NULL, " +
-                SportContract.PlayerEntry.COLUMN_EMAIL + " TEXT NOT NULL); ";
+                SportContract.PlayerEntry.COLUMN_EMAIL + " TEXT NOT NULL, " +
+                SportContract.PlayerEntry.COLUMN_PROFILE_PHOTO + " TEXT NOT NULL); ";
         if (BuildConfig.DEBUG) {
             Log.d(TAG, "onCreate: player table: \n"+SQL_CREATE_PLAYER_TABLE);
         }
@@ -131,6 +132,32 @@ public class SportDbHelper extends SQLiteOpenHelper {
             Log.d(TAG, "onCreate: friends table: \n"+SQL_CREATE_FRIENDS_TABLE);
         }
         sqLiteDatabase.execSQL(SQL_CREATE_FRIENDS_TABLE);
+
+        final String SQL_CREATE_ATTRIBUTES_TABLE = "CREATE TABLE " + SportContract.AttributesEntry.TABLE_NAME + " (" +
+                SportContract.AttributesEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                SportContract.AttributesEntry.COLUMN_PLAYER_ID + " INTEGER NOT NULL, " +
+                SportContract.AttributesEntry.COLUMN_SPEED + " REAL NOT NULL, " +
+                SportContract.AttributesEntry.COLUMN_POWER+ " REAL NOT NULL, " +
+                SportContract.AttributesEntry.COLUMN_TECHNIQUE + " REAL NOT NULL, " +
+                SportContract.AttributesEntry.COLUMN_FITNESS + " REAL NOT NULL, " +
+                SportContract.AttributesEntry.COLUMN_FAIR_PLAY + " REAL NOT NULL, " +
+                "FOREIGN KEY ("+ SportContract.AttributesEntry.COLUMN_PLAYER_ID +") REFERENCES " +
+                SportContract.PlayerEntry.TABLE_NAME + " (" + SportContract.PlayerEntry._ID +")); ";
+        if (BuildConfig.DEBUG) {
+            Log.d(TAG, "onCreate: attributes table: \n"+SQL_CREATE_ATTRIBUTES_TABLE);
+        }
+        sqLiteDatabase.execSQL(SQL_CREATE_ATTRIBUTES_TABLE);
+
+        final String SQL_CREATE_PHOTOS_TABLE = "CREATE TABLE " + SportContract.PhotosEntry.TABLE_NAME + " (" +
+                SportContract.PhotosEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                SportContract.PhotosEntry.COLUMN_VENUE_ID + " INTEGER NOT NULL, " +
+                SportContract.PhotosEntry.COLUMN_URL + " TEXT NOT NULL, " +
+                "FOREIGN KEY ("+ SportContract.PhotosEntry.COLUMN_VENUE_ID +") REFERENCES " +
+                SportContract.VenueEntry.TABLE_NAME + " (" + SportContract.VenueEntry._ID +")); ";
+        if (BuildConfig.DEBUG) {
+            Log.d(TAG, "onCreate: photos table: \n"+SQL_CREATE_PHOTOS_TABLE);
+        }
+        sqLiteDatabase.execSQL(SQL_CREATE_PHOTOS_TABLE);
         
     }
 
@@ -145,6 +172,17 @@ public class SportDbHelper extends SQLiteOpenHelper {
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + SportContract.PlayerTeamEntry.TABLE_NAME);
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + SportContract.MatchEntry.TABLE_NAME);
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + SportContract.FriendsEntry.TABLE_NAME);
+        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + SportContract.AttributesEntry.TABLE_NAME);
+        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + SportContract.PhotosEntry.TABLE_NAME);
         onCreate(sqLiteDatabase);
+    }
+
+    @Override
+    public void onOpen(SQLiteDatabase db) {
+        super.onOpen(db);
+        if (!db.isReadOnly()) {
+            // Enable foreign key constraints
+            db.execSQL("PRAGMA foreign_keys=ON;");
+        }
     }
 }

@@ -22,6 +22,11 @@
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"
             android:value="@string/facebook_app_id" />
+        <provider
+            android:authorities="com.casasw.sportclub"
+            android:name="com.casasw.sportclub.data.SportProvider"
+            android:exported="false"
+            android:syncable="true"/>
 
         <activity
             android:name=".LoginActivity"
