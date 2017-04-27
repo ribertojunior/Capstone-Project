@@ -5,78 +5,110 @@
     android:id="@+id/login_container"
     android:gravity="center_horizontal"
     android:orientation="vertical"
-    android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.casasw.sportclub.ui.LoginActivity"
-    tools:background="@drawable/back_06"
+    android:layout_margin="@dimen/activity_vertical_margin"
     >
 
+    <android.support.v4.widget.Space
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/logo_bar_size"
+        />
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center">
+        <LinearLayout
+            android:layout_height="match_parent"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:orientation="vertical">
+            <View
+                android:id="@+id/logo_bar_left1"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/logo_bar_size"
+                android:background="@drawable/line" />
+            <android.support.v4.widget.Space
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/logo_bar_size"
+                />
+            <View
+                android:id="@+id/logo_bar_left2"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/logo_bar_size"
+                android:background="@drawable/line" />
+        </LinearLayout>
 
-    <ImageView
-        android:layout_width="@dimen/image_view_size"
-        android:layout_height="@dimen/image_view_size"
-        android:src="@drawable/logo"
-        android:contentDescription="@string/logo_description"/>
+        <ImageView
+            android:layout_width="@dimen/image_view_width"
+            android:layout_height="@dimen/image_view_height"
+            android:src="@drawable/logo"
+            android:contentDescription="@string/logo_description" />
 
+        <LinearLayout
+            android:layout_height="match_parent"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:orientation="vertical">
+            <View
+                android:id="@+id/logo_bar_right1"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/logo_bar_size"
+                android:background="@drawable/line_right" />
+            <android.support.v4.widget.Space
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/logo_bar_size"
+                />
+            <View
+                android:id="@+id/logo_bar_right2"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/logo_bar_size"
+                android:background="@drawable/line_right" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <android.support.v4.widget.Space
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_weight="1"/>
+
+    <com.google.android.gms.common.SignInButton
+        android:id="@+id/sign_in_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"/>
     <com.facebook.login.widget.LoginButton
         android:id="@+id/login_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="@dimen/facebook_button_margin"
-        android:layout_marginBottom="@dimen/facebook_button_margin" />
-    <com.google.android.gms.common.SignInButton
-        android:id="@+id/sign_in_button"
+        android:layout_marginBottom="@dimen/facebook_button_margin"
+        android:elevation="@dimen/standard_elevation" />
+    <Button
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"/>
+        android:layout_height="30dp"
+        android:id="@+id/sign_out_button"
+        android:background="@color/colorPrimaryLight"
+        android:textColor="@android:color/white"
+        android:text="@string/sign_out"
+        android:elevation="@dimen/standard_elevation"
+        android:visibility="invisible"
+        android:onClick="signOut"/>
     <android.support.v4.widget.Space
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_weight="1"/>
 
-    <LinearLayout
-        android:layout_width="match_parent"
+    <TextView
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:gravity="center_horizontal"
-        android:background="@drawable/photo_background_protection">
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            >
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/app_name"
-                android:textAppearance="@style/Base.TextAppearance.AppCompat.Subhead"
-
-                android:textColor="@android:color/white"
-                android:paddingEnd="@dimen/name_version_padding"
-                android:paddingStart="@dimen/name_version_padding" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/version"
-                android:textAppearance="@style/Base.TextAppearance.AppCompat.Subhead"
-                android:textColor="@android:color/white" />
-        </LinearLayout>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:padding="@dimen/help_padding"
-            android:text="@string/help_text"
-            android:textAppearance="@style/Base.TextAppearance.AppCompat.Subhead"
-            android:textStyle="bold"
-            android:textColor="@android:color/white"
-            android:onClick="helpOnClick"
-             />
-    </LinearLayout>
-
+        android:padding="@dimen/help_padding"
+        android:text="@string/help_text"
+        android:textAppearance="@style/Base.TextAppearance.AppCompat.Subhead"
+        android:textStyle="bold"
+        android:textColor="@color/colorPrimaryDark"
+        android:onClick="helpOnClick"
+         />
 
 </LinearLayout>
