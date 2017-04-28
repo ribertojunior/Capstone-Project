@@ -91,33 +91,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         loginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {
-                GraphRequest request = GraphRequest.newMeRequest(loginResult.getAccessToken(), new GraphRequest.GraphJSONObjectCallback() {
-                    @Override
-                    public void onCompleted(JSONObject object, GraphResponse response) {
-                        try {
-                            Profile profile = Profile.getCurrentProfile();
-                            Bundle bundle = new Bundle();
-                            findViewById(R.id.sign_in_button).setVisibility(View.GONE);
-                            findViewById(R.id.login_button).setVisibility(View.GONE);
-                            Intent intent = new Intent(LoginActivity.this, ProfileActivity.class);
-                            bundle.putString(EXTRA_NAME, object.getString("name"));
-                            bundle.putString(EXTRA_EMAIL,object.getString("email"));
-                            bundle.putString(EXTRA_PHOTO,profile.getProfilePictureUri(100, 100).toString());
-                            intent.putExtras(bundle);
-                            startActivity(intent);
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                });
-                Bundle bundle = new Bundle();
-                bundle.putString("fields", "id,name, email");
-                request.setParameters(bundle);
-                request.executeAsync();
-                SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(LoginActivity.this);
-                prefs.edit().putString(getString(R.string.pref_account_key),
-                        getString(R.string.pref_account_facebook)).apply();
-
+                facebookLoginSuccess(loginResult);
             }
 
             @Override
@@ -140,9 +114,13 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                     findViewById(R.id.sign_out_button).setVisibility(View.GONE);
                     findViewById(R.id.sign_in_button).setVisibility(View.VISIBLE);
                     findViewById(R.id.login_button).setVisibility(View.VISIBLE);
+                    Intent intent = new Intent(LoginActivity.this, LoginActivity.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                    startActivity(intent);
                 }
             }
         };
+
 
         /*End of Facebook*/
 
@@ -178,12 +156,32 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
             String account = prefs.getString(getString(R.string.pref_account_key), getString(R.string.pref_account_default));
             if (account.equals(getString(R.string.pref_account_google))) {
                 findViewById(R.id.sign_out_button).setVisibility(View.VISIBLE);
+                findViewById(R.id.login_button).setVisibility(View.GONE);
             }
             findViewById(R.id.sign_in_button).setVisibility(View.GONE);
         }
 
+        if (isLoggedIn() && !OUT) {
+            findViewById(R.id.sign_in_button).setVisibility(View.GONE);
+            findViewById(R.id.sign_out_button).setVisibility(View.GONE);
+            Intent intent = new Intent(this, ProfileActivity.class);
+            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+            Bundle bundle = new Bundle();
+            bundle.putString(EXTRA_NAME, prefs.getString(getString(R.string.pref_user_name_key), getString(R.string.error_name)));
+            bundle.putString(EXTRA_EMAIL, prefs.getString(getString(R.string.pref_user_email_key), getString(R.string.error_email)));
+            Profile profile = Profile.getCurrentProfile();
+            bundle.putString(EXTRA_PHOTO,profile.getProfilePictureUri(100, 100).toString());
+            intent.putExtras(bundle);
+            startActivity(intent);
+        }
+
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        accessTokenTracker.stopTracking();
+    }
 
     @Override
     public void onStart() {
@@ -217,13 +215,6 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     public void onStop() {
         super.onStop();
     }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        accessTokenTracker.stopTracking();
-    }
-
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -293,11 +284,13 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     }
 
     public void signOut(View view) {
+        showProgressDialog();
         Auth.GoogleSignInApi.signOut(mGoogleApiClient).setResultCallback(
                 new ResultCallback<Status>() {
                     @Override
                     public void onResult(Status status) {
                         // [START_EXCLUDE]
+                        hideProgressDialog();
                         OUT = false;
                         findViewById(R.id.sign_out_button).setVisibility(View.GONE);
                         findViewById(R.id.sign_in_button).setVisibility(View.VISIBLE);
@@ -315,6 +308,43 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     private boolean isLoggedIn() {
         AccessToken accesstoken = AccessToken.getCurrentAccessToken();
         return !(accesstoken == null || accesstoken.getPermissions().isEmpty());
+    }
+
+    private void facebookLoginSuccess(LoginResult loginResult) {
+        showProgressDialog();
+        GraphRequest request = GraphRequest.newMeRequest(loginResult.getAccessToken(), new GraphRequest.GraphJSONObjectCallback() {
+            @Override
+            public void onCompleted(JSONObject object, GraphResponse response) {
+                try {
+                    Profile profile = Profile.getCurrentProfile();
+                    SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(LoginActivity.this);
+                    Bundle bundle = new Bundle();
+                    findViewById(R.id.sign_in_button).setVisibility(View.GONE);
+                    findViewById(R.id.sign_out_button).setVisibility(View.GONE);
+                    Intent intent = new Intent(LoginActivity.this, ProfileActivity.class);
+                    String aux = object.getString("name");
+                    prefs.edit().putString(getString(R.string.pref_user_name_key), aux).apply();
+                    bundle.putString(EXTRA_NAME, aux);
+                    aux = object.getString("email");
+                    prefs.edit().putString(getString(R.string.pref_user_name_key), aux).apply();
+                    bundle.putString(EXTRA_EMAIL,aux);
+                    bundle.putString(EXTRA_PHOTO,profile.getProfilePictureUri(100, 100).toString());
+                    intent.putExtras(bundle);
+                    hideProgressDialog();
+                    startActivity(intent);
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+        Bundle bundle = new Bundle();
+        bundle.putString("fields", "id,name, email");
+        request.setParameters(bundle);
+        request.executeAsync();
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(LoginActivity.this);
+        prefs.edit().putString(getString(R.string.pref_account_key),
+                getString(R.string.pref_account_facebook)).apply();
     }
 }
 

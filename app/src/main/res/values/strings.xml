@@ -23,12 +23,19 @@
     <string name="preferences_nav">Preferences</string>
     <string name="title_activity_settings">Settings</string>
 
+    <string name="pref_account_key" translatable="false">account</string>
+    <string name="pref_account_default" translatable="false">default</string>
+    <string name="pref_account_google" translatable="false">google</string>
+    <string name="pref_account_facebook" translatable="false">facebook</string>
+
+    <string name="pref_user_name_key" translatable="false">user_name</string>
+    <string name="pref_user_email_key" translatable="false">user_email</string>
+    <string name="error_name">Error</string>
+    <string name="error_email">error@error.com</string>
+
     <!-- Strings related to Settings -->
 
-    <string name="pref_account_key">account</string>
-    <string name="pref_account_default">default</string>
-    <string name="pref_account_google">google</string>
-    <string name="pref_account_facebook">facebook</string>
+
     
     <!-- Example General settings -->
     <string name="pref_header_general">General</string>
