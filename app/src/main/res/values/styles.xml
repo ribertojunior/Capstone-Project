@@ -13,6 +13,11 @@
 
     </style>
 
+    <style name="RatingBar" parent="android:style/Widget.Material.RatingBar.Small">
+        <item name="colorControlNormal">@android:color/white</item>
+        <item name="colorControlActivated">@color/colorAccent</item>
+    </style>
+
 
     <style name="AppTheme.Toolbar" parent="Widget.AppCompat.Toolbar" >
         <item name="android:background">@color/colorPrimary</item>

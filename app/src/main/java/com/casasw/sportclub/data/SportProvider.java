@@ -14,7 +14,7 @@ import android.util.Log;
 
 import com.casasw.sportclub.ui.BuildConfig;
 
-import static com.casasw.sportclub.data.SportContract.PlayerEntry.buildPlayerUri;
+import static com.casasw.sportclub.data.SportContract.PlayerEntry.buildPlayerUriWithID;
 
 /**
  * Created by Junior on 28/03/2017.
@@ -47,8 +47,14 @@ public class SportProvider extends ContentProvider {
     static final int MATCH_ID = 301;
     static final int VENUE = 400;
     static final int VENUE_ID = 401;
+    static final int SPORTS = 343;
+    static final int SPORTS_ID = 19;
     static final int PLAYER_TEAM = 500;
     static final int PLAYER_TEAM_ID = 501;
+    static final int PLAYER_SPORT = 231;
+    static final int PLAYER_SPORT_ID = 123;
+    static final int VENUE_SPORT = 135;
+    static final int VENUE_SPORT_ID = 658;
     static final int COMMENTARIES = 600;
     static final int COMMENTARIES_ID = 606;
     static final int COMMENTARIES_VENUE_ID = 601;
@@ -60,6 +66,7 @@ public class SportProvider extends ContentProvider {
     static final int ATTRIBUTES = 770;
     static final int ATTRIBUTES_ID = 771;
     static final int PLAYER_TEAM_ATTRIBUTES = 800;
+    static final int PLAYER_SPORT_ATTRIBUTES = 590;
     static final int VENUE_PLAYER_COMMENTARIES_PHOTOS = 900;
     static final int PLAYER_FRIENDS_ATTRIBUTES = 1100;
     static final int MATCH_VENUE_TEAM = 1200;
@@ -127,7 +134,7 @@ public class SportProvider extends ContentProvider {
             SportContract.PlayerEntry.TABLE_NAME +
                     "." + SportContract.PlayerEntry.COLUMN_HANDEDNESS,
             SportContract.PlayerEntry.TABLE_NAME +
-                    "." + SportContract.PlayerEntry.COLUMN_AGE,
+                    "." + SportContract.PlayerEntry.COLUMN_BDAY,
             SportContract.PlayerEntry.TABLE_NAME +
                     "." + SportContract.PlayerEntry.COLUMN_HEIGHT,
             SportContract.PlayerEntry.TABLE_NAME +
@@ -156,6 +163,47 @@ public class SportProvider extends ContentProvider {
                     "." + SportContract.FriendsEntry.COLUMN_FROM,
             SportContract.FriendsEntry.TABLE_NAME +
                     "." + SportContract.FriendsEntry.COLUMN_STATUS
+
+    };
+
+    /* jogador, atributos, esporte*/
+    static final String[] PLAYER_SPORTS_ATTRIBUTES = {
+            SportContract.PlayerEntry.TABLE_NAME +
+                    "." + SportContract.PlayerEntry._ID,
+            SportContract.PlayerEntry.TABLE_NAME +
+                    "." + SportContract.PlayerEntry.COLUMN_PLAYER_NAME,
+            SportContract.PlayerEntry.TABLE_NAME +
+                    "." + SportContract.PlayerEntry.COLUMN_HANDEDNESS,
+            SportContract.PlayerEntry.TABLE_NAME +
+                    "." + SportContract.PlayerEntry.COLUMN_BDAY,
+            SportContract.PlayerEntry.TABLE_NAME +
+                    "." + SportContract.PlayerEntry.COLUMN_HEIGHT,
+            SportContract.PlayerEntry.TABLE_NAME +
+                    "." + SportContract.PlayerEntry.COLUMN_WEIGHT,
+            SportContract.PlayerEntry.TABLE_NAME +
+                    "." + SportContract.PlayerEntry.COLUMN_CITY,
+            SportContract.PlayerEntry.TABLE_NAME +
+                    "." + SportContract.PlayerEntry.COLUMN_STATE,
+            SportContract.PlayerEntry.TABLE_NAME +
+                    "." + SportContract.PlayerEntry.COLUMN_RATING,
+            SportContract.PlayerEntry.TABLE_NAME +
+                    "." + SportContract.PlayerEntry.COLUMN_EMAIL,
+            SportContract.PlayerEntry.TABLE_NAME +
+                    "." + SportContract.PlayerEntry.COLUMN_PROFILE_PHOTO,
+            SportContract.AttributesEntry.TABLE_NAME +
+                    "." + SportContract.AttributesEntry.COLUMN_SPEED,
+            SportContract.AttributesEntry.TABLE_NAME +
+                    "." + SportContract.AttributesEntry.COLUMN_POWER,
+            SportContract.AttributesEntry.TABLE_NAME +
+                    "." + SportContract.AttributesEntry.COLUMN_TECHNIQUE,
+            SportContract.AttributesEntry.TABLE_NAME +
+                    "." + SportContract.AttributesEntry.COLUMN_FITNESS,
+            SportContract.AttributesEntry.TABLE_NAME +
+                    "." + SportContract.AttributesEntry.COLUMN_FAIR_PLAY,
+            SportContract.SportsEntry.TABLE_NAME +
+                    "." + SportContract.SportsEntry.COLUMN_NAME,
+            SportContract.SportsEntry.TABLE_NAME +
+                    "." + SportContract.SportsEntry.COLUMN_STATUS
 
     };
 
@@ -209,6 +257,33 @@ public class SportProvider extends ContentProvider {
         if (BuildConfig.DEBUG) {
             Log.d(TAG, "static initializer: Player Team Attributes Query\n "+ sPlayerTeamAttributesQueryBuilder.getTables());
         }
+    }
+    
+    private static final SQLiteQueryBuilder sPlayerSportAttributesQueryBuilder;
+    static {
+        sPlayerSportAttributesQueryBuilder = new SQLiteQueryBuilder();
+        sPlayerSportAttributesQueryBuilder.setTables(
+                SportContract.PlayerEntry.TABLE_NAME + " INNER JOIN " +
+                        SportContract.AttributesEntry.TABLE_NAME +
+                        " ON " + SportContract.PlayerEntry.TABLE_NAME +
+                        "." + SportContract.PlayerEntry._ID +
+                        " = " + SportContract.AttributesEntry.TABLE_NAME +
+                        "." + SportContract.AttributesEntry.COLUMN_PLAYER_ID +
+                        " INNER JOIN " +
+                        SportContract.PlayerSportEntry.TABLE_NAME +
+                        " ON " + SportContract.PlayerEntry.TABLE_NAME +
+                        "." + SportContract.PlayerEntry._ID +
+                        " = " + SportContract.PlayerSportEntry.TABLE_NAME +
+                        "." + SportContract.PlayerSportEntry.COLUMN_PLAYER_ID +
+                        " INNER JOIN " +
+                        SportContract.SportsEntry.TABLE_NAME +
+                        " ON " + SportContract.PlayerSportEntry.TABLE_NAME +
+                        "." + SportContract.PlayerSportEntry.COLUMN_SPORT_ID +
+                        " = " + SportContract.SportsEntry.TABLE_NAME +
+                        "." + SportContract.SportsEntry._ID
+
+
+        );
     }
 
     private static final SQLiteQueryBuilder sVenuePlayerCommentariesQueryBuilder;
@@ -293,14 +368,24 @@ public class SportProvider extends ContentProvider {
         uriMatcher.addURI(SportContract.CONTENT_AUTHORITY, SportContract.PATH_MATCH+"/#", MATCH_ID);
         uriMatcher.addURI(SportContract.CONTENT_AUTHORITY, SportContract.PATH_VENUE, VENUE);
         uriMatcher.addURI(SportContract.CONTENT_AUTHORITY, SportContract.PATH_VENUE+"/#", VENUE_ID);
-        uriMatcher.addURI(SportContract.CONTENT_AUTHORITY, SportContract.PATH_PLAYER_TEAM, PLAYER_TEAM);
-        uriMatcher.addURI(SportContract.CONTENT_AUTHORITY, SportContract.PATH_PLAYER_TEAM+"/#", PLAYER_TEAM_ID);
+        uriMatcher.addURI(SportContract.CONTENT_AUTHORITY, SportContract.PATH_SPORT, SPORTS);
+        uriMatcher.addURI(SportContract.CONTENT_AUTHORITY, SportContract.PATH_SPORT+"#", SPORTS_ID);
+        uriMatcher.addURI(SportContract.CONTENT_AUTHORITY, SportContract.PATH_PLAYER_SPORT, PLAYER_SPORT);
+        uriMatcher.addURI(SportContract.CONTENT_AUTHORITY, SportContract.PATH_PLAYER_SPORT+"#", PLAYER_SPORT_ID);
+        uriMatcher.addURI(SportContract.CONTENT_AUTHORITY, SportContract.PATH_VENUE_SPORT, VENUE_SPORT);
+        uriMatcher.addURI(SportContract.CONTENT_AUTHORITY, SportContract.PATH_VENUE_SPORT+"/#", VENUE_SPORT_ID);
+        uriMatcher.addURI(SportContract.CONTENT_AUTHORITY,
+                SportContract.PATH_PLAYER_TEAM, PLAYER_TEAM);
+        uriMatcher.addURI(SportContract.CONTENT_AUTHORITY,
+                SportContract.PATH_PLAYER_TEAM+"/#", PLAYER_TEAM_ID);
         uriMatcher.addURI(SportContract.CONTENT_AUTHORITY, SportContract.PATH_COMMENTARIES, COMMENTARIES);
-        uriMatcher.addURI(SportContract.CONTENT_AUTHORITY, SportContract.PATH_COMMENTARIES+"/#", COMMENTARIES_ID);
+        uriMatcher.addURI(SportContract.CONTENT_AUTHORITY,
+                SportContract.PATH_COMMENTARIES+"/#", COMMENTARIES_ID);
         uriMatcher.addURI(SportContract.CONTENT_AUTHORITY, SportContract.PATH_PHOTOS, PHOTOS);
         uriMatcher.addURI(SportContract.CONTENT_AUTHORITY, SportContract.PATH_PHOTOS+"/#", PHOTOS_ID);
         uriMatcher.addURI(SportContract.CONTENT_AUTHORITY, SportContract.PATH_ATTRIBUTES, ATTRIBUTES);
-        uriMatcher.addURI(SportContract.CONTENT_AUTHORITY, SportContract.PATH_ATTRIBUTES+"/#", ATTRIBUTES_ID);
+        uriMatcher.addURI(SportContract.CONTENT_AUTHORITY,
+                SportContract.PATH_ATTRIBUTES+"/#", ATTRIBUTES_ID);
         uriMatcher.addURI(SportContract.CONTENT_AUTHORITY,
                 SportContract.PATH_COMMENTARIES+"/"+SportContract.PATH_VENUE+"/#", COMMENTARIES_VENUE_ID);
         uriMatcher.addURI(SportContract.CONTENT_AUTHORITY,
@@ -311,6 +396,10 @@ public class SportProvider extends ContentProvider {
         uriMatcher.addURI(SportContract.CONTENT_AUTHORITY,
                 SportContract.PATH_PLAYER+"/"+SportContract.PATH_TEAM+"/"+SportContract.PATH_ATTRIBUTES+"/#",
                 PLAYER_TEAM_ATTRIBUTES);
+        //content://com.casasw.sportclub/player/sports/attributes/ribertojunior(at)gmail.com
+        uriMatcher.addURI(SportContract.CONTENT_AUTHORITY,
+                SportContract.PATH_PLAYER+"/"+SportContract.PATH_SPORT+"/"+SportContract.PATH_ATTRIBUTES+"/*",
+                PLAYER_SPORT_ATTRIBUTES);
         uriMatcher.addURI(SportContract.CONTENT_AUTHORITY,
                 SportContract.PATH_PLAYER+"/"+SportContract.PATH_FRIENDS+"/"+SportContract.PATH_ATTRIBUTES+"/#",
                 PLAYER_FRIENDS_ATTRIBUTES);
@@ -327,6 +416,9 @@ public class SportProvider extends ContentProvider {
     private static final String sPlayerSelection =
             SportContract.PlayerEntry.TABLE_NAME +
                     "." + SportContract.PlayerEntry._ID + " = ?";
+    private static final String sPlayerEmailSelection =
+            SportContract.PlayerEntry.TABLE_NAME +
+                    "." + SportContract.PlayerEntry.COLUMN_EMAIL + " = ?";
     private static final String sTeamSelection =
             SportContract.TeamEntry.TABLE_NAME +
                     "." + SportContract.TeamEntry._ID + " = ?";
@@ -336,6 +428,9 @@ public class SportProvider extends ContentProvider {
     private static final String sVenueSelection =
             SportContract.VenueEntry.TABLE_NAME +
                     "." + SportContract.VenueEntry._ID + " = ?";
+    private static final String sSportsSelection =
+            SportContract.SportsEntry.TABLE_NAME +
+                    "." + SportContract.SportsEntry._ID + " = ?";
     private static final String sCommentariesSelection = 
             SportContract.CommentariesEntry.TABLE_NAME +
             "." + SportContract.CommentariesEntry._ID + " = ?";
@@ -348,6 +443,12 @@ public class SportProvider extends ContentProvider {
     private static final String sPlayerTeamSelection =
             SportContract.PlayerTeamEntry.TABLE_NAME +
                     "." + SportContract.PlayerTeamEntry.COLUMN_TEAM_ID+ " = ?";
+    private static final String sPlayerSportSelection =
+            SportContract.PlayerSportEntry.TABLE_NAME +
+                    "." + SportContract.PlayerSportEntry.COLUMN_SPORT_ID+ " = ?";
+    private static final String sVenueSportSelection =
+            SportContract.VenueSportEntry.TABLE_NAME +
+                    "." + SportContract.VenueSportEntry.COLUMN_SPORT_ID+ " = ?";
     private static final String sCommentariesVenueSelection =
             SportContract.CommentariesEntry.TABLE_NAME +
                     "." + SportContract.CommentariesEntry.COLUMN_VENUE_ID+ " = ?";
@@ -465,6 +566,29 @@ public class SportProvider extends ContentProvider {
                         sortOrder
                 );
                 break;
+            case SPORTS:
+                cursor = mOpenHelper.getReadableDatabase().query(
+                        SportContract.SportsEntry.TABLE_NAME,
+                        projection,
+                        selection,
+                        selectionArgs,
+                        null,
+                        null,
+                        sortOrder
+                );
+                break;
+            case SPORTS_ID:
+                selectionArgs = new String[]{SportContract.SportsEntry.getIdFromUri(uri)};
+                cursor = mOpenHelper.getReadableDatabase().query(
+                        SportContract.SportsEntry.TABLE_NAME,
+                        projection,
+                        sSportsSelection,
+                        selectionArgs,
+                        null,
+                        null,
+                        sortOrder
+                );
+                break;
             case PLAYER_TEAM:
                 cursor = mOpenHelper.getReadableDatabase().query(
                         SportContract.PlayerTeamEntry.TABLE_NAME,
@@ -482,6 +606,52 @@ public class SportProvider extends ContentProvider {
                         SportContract.PlayerTeamEntry.TABLE_NAME,
                         projection,
                         sPlayerTeamSelection,
+                        selectionArgs,
+                        null,
+                        null,
+                        sortOrder
+                );
+                break;
+            case PLAYER_SPORT:
+                cursor = mOpenHelper.getReadableDatabase().query(
+                        SportContract.PlayerSportEntry.TABLE_NAME,
+                        projection,
+                        selection,
+                        selectionArgs,
+                        null,
+                        null,
+                        sortOrder
+                );
+                break;
+            case PLAYER_SPORT_ID:
+                selectionArgs = new String[]{SportContract.PlayerSportEntry.getIdFromUri(uri)};
+                cursor = mOpenHelper.getReadableDatabase().query(
+                        SportContract.PlayerSportEntry.TABLE_NAME,
+                        projection,
+                        sPlayerSportSelection,
+                        selectionArgs,
+                        null,
+                        null,
+                        sortOrder
+                );
+                break;
+            case VENUE_SPORT:
+                cursor = mOpenHelper.getReadableDatabase().query(
+                        SportContract.VenueSportEntry.TABLE_NAME,
+                        projection,
+                        selection,
+                        selectionArgs,
+                        null,
+                        null,
+                        sortOrder
+                );
+                break;
+            case VENUE_SPORT_ID:
+                selectionArgs = new String[]{SportContract.VenueSportEntry.getIdFromUri(uri)};
+                cursor = mOpenHelper.getReadableDatabase().query(
+                        SportContract.VenueSportEntry.TABLE_NAME,
+                        projection,
+                        sVenueSportSelection,
                         selectionArgs,
                         null,
                         null,
@@ -613,6 +783,19 @@ public class SportProvider extends ContentProvider {
                         selectionArgs,
                          null, null, null);
                 break;
+            case PLAYER_SPORT_ATTRIBUTES:
+                //mudei para email, preciso arrumar
+                if (projection == null) {
+                    projection = PLAYER_SPORTS_ATTRIBUTES;
+                }
+                selectionArgs = new String[]{SportContract.PlayerEntry.getPlayerEmailFromUri(uri)};
+                cursor = sPlayerSportAttributesQueryBuilder.query(
+                        mOpenHelper.getReadableDatabase(),
+                        projection,
+                        sPlayerEmailSelection,
+                        selectionArgs,
+                        null, null, null);                
+                break;
             case VENUE_PLAYER_COMMENTARIES_PHOTOS:
                 selectionArgs = new String[]{SportContract.VenueEntry.getVenueIdFromUri(uri)};
                 cursor = sVenuePlayerCommentariesQueryBuilder.query(
@@ -669,10 +852,22 @@ public class SportProvider extends ContentProvider {
                 return SportContract.VenueEntry.CONTENT_TYPE;
             case VENUE_ID:
                 return SportContract.VenueEntry.CONTENT_ITEM_TYPE;
+            case SPORTS:
+                return SportContract.SportsEntry.CONTENT_TYPE;
+            case SPORTS_ID:
+                return SportContract.SportsEntry.CONTENT_ITEM_TYPE;
             case PLAYER_TEAM:
                 return SportContract.PlayerTeamEntry.CONTENT_TYPE;
             case PLAYER_TEAM_ID:
                 return SportContract.PlayerTeamEntry.CONTENT_ITEM_TYPE;
+            case PLAYER_SPORT:
+                return SportContract.PlayerSportEntry.CONTENT_TYPE;
+            case PLAYER_SPORT_ID:
+                return SportContract.PlayerSportEntry.CONTENT_ITEM_TYPE;
+            case VENUE_SPORT:
+                return SportContract.VenueSportEntry.CONTENT_TYPE;
+            case VENUE_SPORT_ID:
+                return SportContract.VenueSportEntry.CONTENT_ITEM_TYPE;
             case COMMENTARIES:
                 return SportContract.CommentariesEntry.CONTENT_TYPE;
             case COMMENTARIES_ID:
@@ -695,6 +890,8 @@ public class SportProvider extends ContentProvider {
                 return SportContract.AttributesEntry.CONTENT_ITEM_TYPE;
             case PLAYER_TEAM_ATTRIBUTES:
                 return SportContract.PlayerEntry.CONTENT_ITEM_TYPE;
+            case PLAYER_SPORT_ATTRIBUTES:
+                return SportContract.PlayerEntry.CONTENT_ITEM_TYPE;
             case VENUE_PLAYER_COMMENTARIES_PHOTOS:
                 return SportContract.VenueEntry.CONTENT_ITEM_TYPE;
             case PLAYER_FRIENDS_ATTRIBUTES:
@@ -716,7 +913,7 @@ public class SportProvider extends ContentProvider {
             case PLAYER:
                 _id = db.insert(SportContract.PlayerEntry.TABLE_NAME, null, contentValues);
                 if (_id >0)
-                    uriReturn = buildPlayerUri(_id);
+                    uriReturn = buildPlayerUriWithID(_id);
                 else
                     throw new android.database.SQLException(TAG + " Failed to insert row into " + uri);
                 break;
@@ -742,6 +939,27 @@ public class SportProvider extends ContentProvider {
                 else
                     throw new android.database.SQLException(TAG + " Failed to insert row into " + uri);
                 break;
+            case SPORTS:
+                _id = db.insert(SportContract.SportsEntry.TABLE_NAME, null, contentValues);
+                if (_id >0)
+                    uriReturn = SportContract.SportsEntry.buildSportWithIdUri(_id);
+                else
+                    throw new android.database.SQLException(TAG + " Failed to insert row into " + uri);
+                break;
+            case PLAYER_SPORT:
+                _id = db.insert(SportContract.PlayerSportEntry.TABLE_NAME, null, contentValues);
+                if (_id >0)
+                    uriReturn = SportContract.PlayerSportEntry.buildPlayerSportUri(_id);
+                else
+                    throw new android.database.SQLException(TAG + " Failed to insert row into " + uri);
+                break;
+            case VENUE_SPORT:
+                _id = db.insert(SportContract.VenueSportEntry.TABLE_NAME, null, contentValues);
+                if (_id >0)
+                    uriReturn = SportContract.VenueSportEntry.buildVenueSportUri(_id);
+                else
+                    throw new android.database.SQLException(TAG + " Failed to insert row into " + uri);
+                break;
             case PLAYER_TEAM:
                 _id = db.insert(SportContract.PlayerTeamEntry.TABLE_NAME, null, contentValues);
                 if (_id >0)
@@ -749,7 +967,6 @@ public class SportProvider extends ContentProvider {
                 else
                     throw new android.database.SQLException(TAG + " Failed to insert row into " + uri);
                 break;
-
             case COMMENTARIES:
                 _id = db.insert(SportContract.CommentariesEntry.TABLE_NAME, null, contentValues);
                 if (_id >0)
@@ -809,6 +1026,15 @@ public class SportProvider extends ContentProvider {
             case MATCH:
                 del = db.delete(SportContract.MatchEntry.TABLE_NAME, s, strings);
                 break;
+            case SPORTS:
+                del = db.delete(SportContract.SportsEntry.TABLE_NAME,s,strings);
+                break;
+            case PLAYER_SPORT:
+                del = db.delete(SportContract.PlayerSportEntry.TABLE_NAME,s,strings);
+                break;
+            case VENUE_SPORT:
+                del = db.delete(SportContract.VenueSportEntry.TABLE_NAME,s,strings);
+                break;
             case COMMENTARIES:
                 del = db.delete(SportContract.CommentariesEntry.TABLE_NAME, s, strings);
                 break;
@@ -849,6 +1075,15 @@ public class SportProvider extends ContentProvider {
             case MATCH:
                 updates = db.update(SportContract.MatchEntry.TABLE_NAME, contentValues, s, strings);
                 break;
+            case SPORTS:
+                updates = db.update(SportContract.SportsEntry.TABLE_NAME, contentValues, s, strings);
+                break;
+            case PLAYER_SPORT:
+                updates = db.update(SportContract.PlayerSportEntry.TABLE_NAME, contentValues, s, strings);
+                break;
+            case VENUE_SPORT:
+                updates = db.update(SportContract.VenueSportEntry.TABLE_NAME, contentValues, s, strings);
+                break;
             case COMMENTARIES:
                 updates = db.update(SportContract.CommentariesEntry.TABLE_NAME, contentValues, s, strings);
                 break;
@@ -887,6 +1122,12 @@ public class SportProvider extends ContentProvider {
                 tableName = SportContract.VenueEntry.TABLE_NAME; break;
             case MATCH:
                 tableName = SportContract.MatchEntry.TABLE_NAME; break;
+            case SPORTS:
+                tableName = SportContract.SportsEntry.TABLE_NAME; break;
+            case PLAYER_SPORT:
+                tableName = SportContract.PlayerSportEntry.TABLE_NAME; break;
+            case VENUE_SPORT:
+                tableName = SportContract.VenueSportEntry.TABLE_NAME;break;
             case COMMENTARIES:
                 tableName = SportContract.CommentariesEntry.TABLE_NAME; break;
             case PLAYER_TEAM:

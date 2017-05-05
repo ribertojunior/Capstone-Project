@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="?attr/listPreferredItemHeight"
+    android:layout_marginStart="@dimen/activity_horizontal_margin"
+    android:layout_marginEnd="@dimen/activity_horizontal_margin">
+    <TextView
+        android:id="@+id/text_view_attributes"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:text="Speed"/>
+    <RatingBar
+        android:id="@+id/rating_bar_attributes"
+        android:numStars="10"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:isIndicator="true"
+        android:theme="@style/RatingBar"/>
+</LinearLayout>

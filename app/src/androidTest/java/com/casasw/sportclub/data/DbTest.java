@@ -24,7 +24,7 @@ import static junit.framework.Assert.assertTrue;
 @RunWith(AndroidJUnit4.class)
 public class DbTest {
 
-    public static final String TAG = DbTest.class.getSimpleName();
+    private static final String TAG = DbTest.class.getSimpleName();
 
     private void deleteDatabase() {
         InstrumentationRegistry.getTargetContext().deleteDatabase(SportDbHelper.DATABASE_NAME);
@@ -45,6 +45,9 @@ public class DbTest {
         tableNameHashSet.add(SportContract.CommentariesEntry.TABLE_NAME);
         tableNameHashSet.add(SportContract.PlayerTeamEntry.TABLE_NAME);
         tableNameHashSet.add(SportContract.FriendsEntry.TABLE_NAME);
+        tableNameHashSet.add(SportContract.SportsEntry.TABLE_NAME);
+        tableNameHashSet.add(SportContract.PlayerSportEntry.TABLE_NAME);
+        tableNameHashSet.add(SportContract.VenueSportEntry.TABLE_NAME);
 
         deleteDatabase();
 
@@ -61,7 +64,7 @@ public class DbTest {
             tableNameHashSet.remove(c.getString(0));
         }while (c.moveToNext());
 
-        assertTrue("Error: Your database was created without tables",
+        assertTrue("Error: Your database was created without all tables",
                 tableNameHashSet.isEmpty());
 
         c = db.rawQuery("PRAGMA table_info(" + SportContract.PlayerEntry.TABLE_NAME + ")",
@@ -75,10 +78,11 @@ public class DbTest {
         columnHashSet.add(SportContract.PlayerEntry.COLUMN_PLAYER_NAME);
         columnHashSet.add(SportContract.PlayerEntry.COLUMN_POSITION);
         columnHashSet.add(SportContract.PlayerEntry.COLUMN_HANDEDNESS);
-        columnHashSet.add(SportContract.PlayerEntry.COLUMN_AGE);
+        columnHashSet.add(SportContract.PlayerEntry.COLUMN_BDAY);
         columnHashSet.add(SportContract.PlayerEntry.COLUMN_HEIGHT);
         columnHashSet.add(SportContract.PlayerEntry.COLUMN_WEIGHT);
         columnHashSet.add(SportContract.PlayerEntry.COLUMN_CITY);
+        columnHashSet.add(SportContract.PlayerEntry.COLUMN_STATE);
         columnHashSet.add(SportContract.PlayerEntry.COLUMN_RATING);
         columnHashSet.add(SportContract.PlayerEntry.COLUMN_EMAIL);
 
@@ -166,8 +170,10 @@ public class DbTest {
         ContentValues values = TestUtilities.createVenueValues();
         long inVenue = db.insert(SportContract.VenueEntry.TABLE_NAME, null, values);
         assertTrue("Error: Insertion in venue table has fail.", inVenue != -1 );
-
-        Cursor cursor = db.query(SportContract.VenueEntry.TABLE_NAME, null, null, null, null, null, null);
+        String sSelection =
+                SportContract.VenueEntry.TABLE_NAME +
+                        "." + SportContract.VenueEntry._ID + " = ?";
+        Cursor cursor = db.query(SportContract.VenueEntry.TABLE_NAME, null, sSelection, new String[]{""+inVenue}, null, null, null);
         assertTrue("Error: Venue table select has fail.",
                 cursor.moveToFirst());
 
@@ -176,9 +182,7 @@ public class DbTest {
 
         //update
         values.put(SportContract.VenueEntry.COLUMN_RATING, "8");
-        String sSelection =
-                SportContract.VenueEntry.TABLE_NAME +
-                        "." + SportContract.VenueEntry._ID + " = ?";
+
         int updates = db.update(SportContract.VenueEntry.TABLE_NAME, values, sSelection, new String[]{""+inVenue});
         assertTrue("Error: Venue table update has fail.", updates==1);
 
@@ -225,6 +229,108 @@ public class DbTest {
         //delete
         int del = db.delete(SportContract.MatchEntry.TABLE_NAME, sSelection, new String[]{""+inMatch});
         assertTrue("Error: Match table delete row has fail.", del==1);
+
+        cursor.close();
+        db.close();
+    }
+
+    @Test
+    public void testSportTable(){
+        SQLiteDatabase db = new SportDbHelper(InstrumentationRegistry.getTargetContext()).getWritableDatabase();
+        //insertion
+        ContentValues values = TestUtilities.createSportValues();
+        long in = db.insert(SportContract.SportsEntry.TABLE_NAME, null, values);
+        assertTrue("Error: Insertion in sport table has fail.", in != -1 );
+        String sSportSelection =
+                SportContract.SportsEntry.TABLE_NAME +
+                        "." + SportContract.SportsEntry._ID + " = ?";
+        Cursor cursor = db.query(SportContract.SportsEntry.TABLE_NAME, null, sSportSelection, new String[]{""+in}, null, null, null);
+        assertTrue("Error: Sport table select has fail.",
+                cursor.moveToFirst());
+        TestUtilities.validateCurrentRecord(
+                "Error: The returning cursor is not equals to ContentValues inserted.", cursor, values);
+
+        //update
+        values.put(SportContract.SportsEntry.COLUMN_NAME, "Soccer");
+
+        int updates = db.update(SportContract.SportsEntry.TABLE_NAME, values, sSportSelection, new String[]{""+in});
+        assertTrue("Error: Sport table update has fail.", updates==1);
+
+        //delete
+        int del = db.delete(SportContract.SportsEntry.TABLE_NAME, sSportSelection, new String[]{""+in});
+        assertTrue("Error: Sport table delete row has fail.", del==1);
+
+        cursor.close();
+        db.close();
+    }
+
+    @Test
+    public void testPlayerSportTable(){
+        SQLiteDatabase db = new SportDbHelper(InstrumentationRegistry.getTargetContext()).getWritableDatabase();
+        //insertion
+        ContentValues values = TestUtilities.createPlayerValues();
+        long in_player = db.insert(SportContract.PlayerEntry.TABLE_NAME, null, values);
+
+
+        Cursor c  = db.query(SportContract.SportsEntry.TABLE_NAME, null, SportContract.SportsEntry.COLUMN_NAME + " = ?", new String[]{"Soccer"}, null, null, null);
+        assertTrue("Sport soccer not found.", c.moveToFirst());
+        long in_sport = c.getLong(c.getColumnIndex(SportContract.SportsEntry._ID));
+        c.close();
+
+        values = TestUtilities.createPlayerSportValues(in_player, in_sport);
+        long in = db.insert(SportContract.PlayerSportEntry.TABLE_NAME, null, values);
+        assertTrue("Error: Insertion in Player-Sport table has fail.", in != -1 );
+        Cursor cursor = db.query(SportContract.PlayerSportEntry.TABLE_NAME, null, null, null, null, null, null);
+        assertTrue("Error: PlayerSport table select has fail.",
+                cursor.moveToFirst());
+        TestUtilities.validateCurrentRecord(
+                "Error: The returning cursor is not equals to ContentValues inserted.", cursor, values);
+
+        //update
+        values.put(SportContract.PlayerSportEntry.COLUMN_PLAYER_ID, in_player);
+        String sPlayerSportSelection =
+                SportContract.PlayerSportEntry.TABLE_NAME +
+                        "." + SportContract.PlayerSportEntry._ID + " = ?";
+        int updates = db.update(SportContract.PlayerSportEntry.TABLE_NAME, values, sPlayerSportSelection, new String[]{""+in});
+        assertTrue("Error: PlayerSport table update has fail.", updates==1);
+
+        //delete
+        int del = db.delete(SportContract.PlayerSportEntry.TABLE_NAME, sPlayerSportSelection, new String[]{""+in});
+        assertTrue("Error: PlayerSport table delete row has fail.", del==1);
+
+        cursor.close();
+        db.close();
+    }
+
+    @Test
+    public void testVenueSportTable(){
+        SQLiteDatabase db = new SportDbHelper(InstrumentationRegistry.getTargetContext()).getWritableDatabase();
+        //insertion
+        ContentValues values = TestUtilities.createVenueValues();
+        long in_venue = db.insert(SportContract.VenueEntry.TABLE_NAME, null, values);
+        values = TestUtilities.createSportValues();
+        long in_sport = db.insert(SportContract.SportsEntry.TABLE_NAME, null, values);
+
+        values = TestUtilities.createVenueSportValues(in_venue, in_sport);
+        long in = db.insert(SportContract.VenueSportEntry.TABLE_NAME, null, values);
+        assertTrue("Error: Insertion in Venue-Sport table has fail.", in != -1 );
+        Cursor cursor = db.query(SportContract.VenueSportEntry.TABLE_NAME, null, null, null, null, null, null);
+        assertTrue("Error: VenueSport table select has fail.",
+                cursor.moveToFirst());
+        TestUtilities.validateCurrentRecord(
+                "Error: The returning cursor is not equals to ContentValues inserted.", cursor, values);
+
+        //update
+        values.put(SportContract.VenueSportEntry.COLUMN_VENUE_ID, in_venue);
+        String sVenueSportSelection =
+                SportContract.VenueSportEntry.TABLE_NAME +
+                        "." + SportContract.VenueSportEntry._ID + " = ?";
+        int updates = db.update(SportContract.VenueSportEntry.TABLE_NAME, values, sVenueSportSelection, new String[]{""+in});
+        assertTrue("Error: VenueSport table update has fail.", updates==1);
+
+        //delete
+        int del = db.delete(SportContract.VenueSportEntry.TABLE_NAME, sVenueSportSelection, new String[]{""+in});
+        assertTrue("Error: VenueSport table delete row has fail.", del==1);
 
         cursor.close();
         db.close();
@@ -395,6 +501,11 @@ public class DbTest {
         values = TestUtilities.createVenueValues();
         long inVenue = db.insert(SportContract.VenueEntry.TABLE_NAME, null, values);
 
+        values = TestUtilities.createSportValues();
+        long inSport = db.insert(SportContract.SportsEntry.TABLE_NAME, null, values);
+        values.put(SportContract.SportsEntry.COLUMN_NAME, "Baseball");
+        long inSport2 = db.insert(SportContract.SportsEntry.TABLE_NAME, null, values);
+
         values = TestUtilities.createMatchValues(inVenue, inTeam);
         long inMatch = db.insert(SportContract.MatchEntry.TABLE_NAME, null, values);
 
@@ -403,6 +514,13 @@ public class DbTest {
 
         values = TestUtilities.createPlayerTeamValues(inPlayer, inTeam);
         long inPlayerTeam = db.insert(SportContract.PlayerTeamEntry.TABLE_NAME, null, values);
+
+        values = TestUtilities.createPlayerSportValues(inPlayer, inSport);
+        long inPlayerSport = db.insert(SportContract.PlayerSportEntry.TABLE_NAME, null, values);
+        values = TestUtilities.createPlayerSportValues(inPlayer, inSport2);
+        long inPlayerSport2 = db.insert(SportContract.PlayerSportEntry.TABLE_NAME, null, values);
+        values = TestUtilities.createVenueSportValues(inVenue, inSport);
+        long inVenueSport = db.insert(SportContract.VenueSportEntry.TABLE_NAME, null, values);
 
         values = TestUtilities.createAttributesValues(inPlayer);
         long inAttr = db.insert(SportContract.AttributesEntry.TABLE_NAME, null, values);
@@ -472,36 +590,42 @@ public class DbTest {
         assertTrue("Error: Venue Commentaries inner join is returning no data.", c.moveToFirst());
         TestUtilities.logCursor(c, TAG);
 
-        /* jogador e amigo*/
-        SQLiteQueryBuilder sPlayerFriendsAttributes = new SQLiteQueryBuilder();
-        sPlayerFriendsAttributes.setTables(
+        /* jogador, atributo, jogador_esporte, esporte   */
+        SQLiteQueryBuilder sPlayerSportAttributes = new SQLiteQueryBuilder();
+        sPlayerSportAttributes.setTables(
                 SportContract.PlayerEntry.TABLE_NAME + " INNER JOIN " +
                         SportContract.AttributesEntry.TABLE_NAME +
                         " ON " + SportContract.PlayerEntry.TABLE_NAME +
                         "." + SportContract.PlayerEntry._ID +
-                        " = " + SportContract.AttributesEntry.COLUMN_PLAYER_ID +
+                        " = " + SportContract.AttributesEntry.TABLE_NAME +
+                        "." + SportContract.AttributesEntry.COLUMN_PLAYER_ID +
                         " INNER JOIN " +
-                        SportContract.FriendsEntry.TABLE_NAME +
-                        " ON (" + SportContract.PlayerEntry.TABLE_NAME +
+                        SportContract.PlayerSportEntry.TABLE_NAME +
+                        " ON " + SportContract.PlayerEntry.TABLE_NAME +
                         "." + SportContract.PlayerEntry._ID +
-                        " = " + SportContract.FriendsEntry.COLUMN_TO +
-                        " OR " + SportContract.PlayerEntry.TABLE_NAME +
-                        "." + SportContract.PlayerEntry._ID +
-                        " = " + SportContract.FriendsEntry.COLUMN_FROM+") AND " +
-                        SportContract.FriendsEntry.COLUMN_STATUS + " = 1"
+                        " = " + SportContract.PlayerSportEntry.TABLE_NAME +
+                        "." + SportContract.PlayerSportEntry.COLUMN_PLAYER_ID +
+                        " INNER JOIN " +
+                        SportContract.SportsEntry.TABLE_NAME +
+                        " ON " + SportContract.PlayerSportEntry.TABLE_NAME +
+                        "." + SportContract.PlayerSportEntry.COLUMN_SPORT_ID +
+                        " = " + SportContract.SportsEntry.TABLE_NAME +
+                        "." + SportContract.SportsEntry._ID
+
 
         );
-        Log.d(TAG, "testInnerJoin: Player Friends inner join: "+sPlayerFriendsAttributes.getTables());
+        Log.d(TAG, "testInnerJoin: Player Sport Attributes inner join: "+sPlayerSportAttributes.getTables());
         selection = SportContract.PlayerEntry.TABLE_NAME +
                 "." + SportContract.PlayerEntry._ID + " = ?";
-        Log.d(TAG, "testInnerJoin: Player Friends inner join selection: "+selection);
+        Log.d(TAG, "testInnerJoin: Player Sport Attributes inner join selection: "+selection);
         selectionArgs = new String[]{""+inPlayer};
-        Log.d(TAG, "testInnerJoin: Player Friends Attributes inner join selection args: " + selectionArgs[0]);
-        c = sPlayerFriendsAttributes.query(
-                db, TestUtilities.PLAYER_FRIENDS_ATTRIBUTES, selection, selectionArgs,
+        Log.d(TAG, "testInnerJoin: Player Sport Attributes inner join selection args: " + selectionArgs[0]);
+        c = sPlayerSportAttributes.query(
+                db, TestUtilities.PLAYER_SPORTS_ATTRIBUTES, selection, selectionArgs,
                 null, null, null
         );
         assertTrue("Error: Player attributes friends inner join is returning no data.", c.moveToFirst());
+        Log.d(TAG, "testInnerJoin: Jogador, atributo e amigo");
         TestUtilities.logCursor(c, TAG);
 
         /*Partida, local e time*/
@@ -528,9 +652,15 @@ public class DbTest {
                 null, null, null
         );
         assertTrue("Error: Match Venue Team inner join is returning no data.", c.moveToFirst());
+
         TestUtilities.logCursor(c, TAG);
 
         c.close();
         db.close();
+    }
+
+    @Test
+    public void testPlayerSportInnerJoin(){
+
     }
 }

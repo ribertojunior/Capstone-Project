@@ -10,10 +10,10 @@ import android.provider.BaseColumns;
  * Defines app's database
  */
 
-class SportContract {
+public class SportContract {
     static final String CONTENT_AUTHORITY = "com.casasw.sportclub";
 
-    static final Uri BASE_CONTENT_URI = Uri.parse("content://" + CONTENT_AUTHORITY);
+    private static final Uri BASE_CONTENT_URI = Uri.parse("content://" + CONTENT_AUTHORITY);
 
     static final String PATH_PLAYER = "player";
     static final String PATH_TEAM = "team";
@@ -23,12 +23,15 @@ class SportContract {
     static final String PATH_COMMENTARIES = "commentaries";
     static final String PATH_FRIENDS = "friends";
     static final String PATH_ATTRIBUTES = "attributes";
-    static final String PATH_PHOTOS= "photos";
+    static final String PATH_PHOTOS = "photos";
+    static final String PATH_SPORT = "sports";
+    static final String PATH_PLAYER_SPORT = "player_sport";
+    static final String PATH_VENUE_SPORT = "venue_sport";
 
     /**
      * Inner class that defines the table contents of player table
      **/
-    static final class PlayerEntry implements BaseColumns {
+    public static final class PlayerEntry implements BaseColumns {
         static final Uri CONTENT_URI =
                 BASE_CONTENT_URI.buildUpon().appendPath(PATH_PLAYER).build();
 
@@ -38,42 +41,56 @@ class SportContract {
         static final String CONTENT_ITEM_TYPE =
                 ContentResolver.CURSOR_ITEM_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_PLAYER;
 
-        static Uri buildPlayerUri(long id) {
+        public static Uri buildPlayerUri() {
+            return CONTENT_URI;
+        }
+
+        public static Uri buildPlayerUriWithID(long id) {
             return ContentUris.withAppendedId(CONTENT_URI, id);
         }
-        static Uri buildPlayerWithTeamAndAttributes(long id) {
+        public static Uri buildPlayerWithTeamAndAttributes(long id) {
             return CONTENT_URI.buildUpon().appendPath(PATH_TEAM).appendPath(PATH_ATTRIBUTES)
                     .appendPath(""+id).build();
         }
-        static Uri buildPlayerWithFriendsAndAttributes(long id) {
+        public  static Uri buildPlayerWithSportAndAttributes(String email) {
+            return CONTENT_URI.buildUpon().appendPath(PATH_SPORT).appendPath(PATH_ATTRIBUTES)
+                    .appendPath(email).build();
+        }
+        public static Uri buildPlayerWithFriendsAndAttributes(long id) {
             return CONTENT_URI.buildUpon().appendPath(PATH_FRIENDS).appendPath(PATH_ATTRIBUTES)
                     .appendPath(""+id).build();
         }
-        static String getPlayerIdFromUri(Uri uri) {
+        public static String getPlayerIdFromUri(Uri uri) {
             return uri.getPathSegments().get(uri.getPathSegments().size()-1);
         }
+        public static String getPlayerEmailFromUri(Uri uri) {
+            String ret = uri.getPathSegments().get(uri.getPathSegments().size()-1).replace("(at)", "@");
+            return ret;
+        }
 
-        static final String TABLE_NAME = "player";
+        public static final String TABLE_NAME = "player";
 
-        static final String COLUMN_PLAYER_NAME = "player_name";
+        public static final String COLUMN_PLAYER_NAME = "player_name";
 
-        static final String COLUMN_POSITION = "position";
+        public static final String COLUMN_POSITION = "position";
 
-        static final String COLUMN_HANDEDNESS = "handedness";
+        public static final String COLUMN_HANDEDNESS = "handedness";
 
-        static final String COLUMN_AGE = "age";
+        public static final String COLUMN_BDAY = "bday";
 
-        static final String COLUMN_HEIGHT = "height";
+        public static final String COLUMN_HEIGHT = "height";
 
-        static final String COLUMN_WEIGHT = "weight";
+        public static final String COLUMN_WEIGHT = "weight";
 
-        static final String COLUMN_CITY = "city";
+        public static final String COLUMN_CITY = "city";
 
-        static final String COLUMN_RATING = "rating";
+        public static final String COLUMN_STATE = "state";
 
-        static final String COLUMN_EMAIL = "email";
+        public static final String COLUMN_RATING = "rating";
 
-        static final String COLUMN_PROFILE_PHOTO = "player_photo";
+        public static final String COLUMN_EMAIL = "email";
+
+        public static final String COLUMN_PROFILE_PHOTO = "player_photo";
 
         /*
         I need to study if there's any other uri need
@@ -83,7 +100,7 @@ class SportContract {
     /**
      * Inner class that defines the table contents of team table
      **/
-    static final class TeamEntry implements BaseColumns {
+    public static final class TeamEntry implements BaseColumns {
         static final Uri CONTENT_URI =
                 BASE_CONTENT_URI.buildUpon().appendPath(PATH_TEAM).build();
 
@@ -100,22 +117,27 @@ class SportContract {
             return uri.getPathSegments().get(uri.getPathSegments().size()-1);
         }
 
-        static final String TABLE_NAME = "team";
+        public static final String TABLE_NAME = "team";
 
-        static final String COLUMN_TEAM_NAME = "team_name";
+        public static final String COLUMN_TEAM_NAME = "team_name";
 
         /* Player foreign key */
-        static final String COLUMN_ADM_ID = "adm_id";
+        public static final String COLUMN_ADM_ID = "adm_id";
 
-        static final String COLUMN_CITY = "city";
+        /* Sport foreign key */
+        public static final String COLUMN_SPORT_ID = "sport_id";
 
-        static final String COLUMN_RATING = "rating";
+        public static final String COLUMN_CITY = "city";
+
+        public static final String COLUMN_STATE = "state";
+
+        public static final String COLUMN_RATING = "rating";
     }
 
     /**
      * Inner class that defines the table contents of venue table
      **/
-    static final class VenueEntry implements BaseColumns {
+    public static final class VenueEntry implements BaseColumns {
         static final Uri CONTENT_URI =
                 BASE_CONTENT_URI.buildUpon().appendPath(PATH_VENUE).build();
 
@@ -137,29 +159,31 @@ class SportContract {
             return uri.getPathSegments().get(uri.getPathSegments().size()-1);
         }
 
-        static final String TABLE_NAME = "venue";
+        public static final String TABLE_NAME = "venue";
 
-        static final String COLUMN_VENUE_NAME = "venue_name";
+        public static final String COLUMN_VENUE_NAME = "venue_name";
 
-        static final String COLUMN_RATING = "rating";
+        public static final String COLUMN_RATING = "rating";
 
-        static final String COLUMN_LAT_COORD = "lat_coord";
+        public static final String COLUMN_LAT_COORD = "lat_coord";
 
-        static final String COLUMN_LONG_COORD = "long_coord";
+        public static final String COLUMN_LONG_COORD = "long_coord";
 
-        static final String COLUMN_ADDRESS = "address";
+        public static final String COLUMN_ADDRESS = "address";
 
-        static final String COLUMN_TELEPHONE = "telephone";
+        public static final String COLUMN_TELEPHONE = "telephone";
 
-        static final String COLUMN_EMAIL = "email";
+        public static final String COLUMN_EMAIL = "email";
 
-        static final String COLUMN_CITY = "city";
+        public static final String COLUMN_CITY = "city";
+
+        public static final String COLUMN_STATE = "state";
     }
 
     /**
      * Inner class that defines the table contents of commentaries table
      **/
-    static final class CommentariesEntry implements BaseColumns {
+    public static final class CommentariesEntry implements BaseColumns {
         static final Uri CONTENT_URI =
                 BASE_CONTENT_URI.buildUpon().appendPath(PATH_COMMENTARIES).build();
 
@@ -183,26 +207,59 @@ class SportContract {
             return uri.getPathSegments().get(uri.getPathSegments().size()-1);
         }
 
-        static final String TABLE_NAME = "commentaries";
+        public static final String TABLE_NAME = "commentaries";
 
         /*Player foreign key*/
-        static final String COLUMN_PLAYER_ID = "player_id";
+        public static final String COLUMN_PLAYER_ID = "player_id";
 
         /*Venue foreign key*/
-        static final String COLUMN_VENUE_ID = "venue_id";
+        public static final String COLUMN_VENUE_ID = "venue_id";
 
-        static final String COLUMN_COMMENTARY = "commentary";
+        public static final String COLUMN_COMMENTARY = "commentary";
 
-        static final String COLUMN_PARENT_ID = "parent_id";
+        public static final String COLUMN_PARENT_ID = "parent_id";
 
-        static final String COLUMN_RATING = "rating";
+        public static final String COLUMN_DATE = "date";
+
+        public static final String COLUMN_RATING = "rating";
+    }
+
+    /**
+     * Inner class that defines the table contents of sport table
+     **/
+    public static final class SportsEntry implements BaseColumns {
+        static final Uri CONTENT_URI =
+                BASE_CONTENT_URI.buildUpon().appendPath(PATH_SPORT).build();
+
+        static final String CONTENT_TYPE =
+                ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_SPORT;
+
+        static final String CONTENT_ITEM_TYPE =
+                ContentResolver.CURSOR_ITEM_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_SPORT;
+
+        static Uri buildSportUri() {
+            return CONTENT_URI;
+        }
+
+        static Uri buildSportWithIdUri(long id) {
+            return ContentUris.withAppendedId(CONTENT_URI, id);
+        }
+        static String getIdFromUri(Uri uri) {
+            return uri.getPathSegments().get(uri.getPathSegments().size()-1);
+        }
+
+        public static final String TABLE_NAME = "sports";
+        //"none" for no edited profiles.
+        public static final String COLUMN_NAME = "sport_name";
+        //off for sport no longer supported and for none
+        public static final String COLUMN_STATUS = "status";
     }
 
     /**
      * Inner class that defines the table contents of player_team table
      * This table stores the relation between player and teams
      **/
-    static final class PlayerTeamEntry implements BaseColumns {
+    public static final class PlayerTeamEntry implements BaseColumns {
         static final Uri CONTENT_URI =
                 BASE_CONTENT_URI.buildUpon().appendPath(PATH_PLAYER_TEAM).build();
 
@@ -219,23 +276,96 @@ class SportContract {
             return uri.getPathSegments().get(uri.getPathSegments().size()-1);
         }
 
-        static final String TABLE_NAME = "player_team";
+        public static final String TABLE_NAME = "player_team";
 
         /*Player foreign key*/
-        static final String COLUMN_PLAYER_ID = "player_id";
+        public static final String COLUMN_PLAYER_ID = "player_id";
 
         /*Venue foreign key*/
-        static final String COLUMN_TEAM_ID = "team_id";
+        public static final String COLUMN_TEAM_ID = "team_id";
 
-        static final String COLUMN_MATCHES = "matches";
+        public static final String COLUMN_MATCHES = "matches";
 
-        static final String COLUMN_RATING = "rating";
+        public static final String COLUMN_RATING = "rating";
 
     }
+
+    /**
+     * Inner class that defines the table contents of player_sport table
+     * This table stores the relation between player and sports
+     **/
+    public static final class PlayerSportEntry implements BaseColumns {
+        static final Uri CONTENT_URI =
+                BASE_CONTENT_URI.buildUpon().appendPath(PATH_PLAYER_SPORT).build();
+
+        static final String CONTENT_TYPE =
+                ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_PLAYER_SPORT;
+
+        static final String CONTENT_ITEM_TYPE =
+                ContentResolver.CURSOR_ITEM_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_PLAYER_SPORT;
+
+        public static Uri buildPlayerSportUri() {
+            return CONTENT_URI;
+        }
+        
+        public static Uri buildPlayerSportUri(long id) {
+            return ContentUris.withAppendedId(CONTENT_URI, id);
+        }
+        public static String getIdFromUri(Uri uri) {
+            return uri.getPathSegments().get(uri.getPathSegments().size()-1);
+        }
+
+        public static final String TABLE_NAME = "player_sport";
+
+        /*Player foreign key*/
+        public static final String COLUMN_PLAYER_ID = "player_id";
+
+        /*Sport foreign key*/
+        public static final String COLUMN_SPORT_ID = "sport_id";
+
+        public static final String COLUMN_POSITIONS = "positions";
+
+    }
+
+    /**
+     * Inner class that defines the table contents of venue_sport table
+     * This table stores the relation between venue and teams
+     **/
+    public static final class VenueSportEntry implements BaseColumns {
+        static final Uri CONTENT_URI =
+                BASE_CONTENT_URI.buildUpon().appendPath(PATH_VENUE_SPORT).build();
+
+        static final String CONTENT_TYPE =
+                ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_VENUE_SPORT;
+
+        static final String CONTENT_ITEM_TYPE =
+                ContentResolver.CURSOR_ITEM_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_VENUE_SPORT;
+
+        static Uri buildVenueSportUri() {
+            return CONTENT_URI;
+        }
+
+        static Uri buildVenueSportUri(long id) {
+            return ContentUris.withAppendedId(CONTENT_URI, id);
+        }
+        static String getIdFromUri(Uri uri) {
+            return uri.getPathSegments().get(uri.getPathSegments().size()-1);
+        }
+
+        public static final String TABLE_NAME = "venue_sport";
+
+        /*Venue foreign key*/
+        public static final String COLUMN_VENUE_ID = "venue_id";
+
+        /*Sport foreign key*/
+        public static final String COLUMN_SPORT_ID = "sport_id";
+
+    }
+    
     /**
      * Inner class that defines the table contents of match table
      **/
-    static final class MatchEntry implements BaseColumns {
+    public static final class MatchEntry implements BaseColumns {
         static final Uri CONTENT_URI =
                 BASE_CONTENT_URI.buildUpon().appendPath(PATH_MATCH).build();
 
@@ -255,26 +385,26 @@ class SportContract {
             return uri.getPathSegments().get(uri.getPathSegments().size()-1);
         }
 
-        static final String TABLE_NAME = "match";
+        public static final String TABLE_NAME = "match";
 
-        static final String COLUMN_MATCH_NAME = "name";
+        public static final String COLUMN_MATCH_NAME = "name";
 
-        static final String COLUMN_DATE = "date";
+        public static final String COLUMN_DATE = "date";
 
         /*Player foreign key*/
-        static final String COLUMN_VENUE_ID = "venue_id";
+        public static final String COLUMN_VENUE_ID = "venue_id";
 
         /*Team foreign key*/
-        static final String COLUMN_TEAM_ID = "team_id";
+        public static final String COLUMN_TEAM_ID = "team_id";
 
-        static final String COLUMN_RATING = "rating";
+        public static final String COLUMN_RATING = "rating";
     }
 
     /**
      * Inner class that defines the table contents of friends table
      * This table stores the relation between players
      **/
-    static final class FriendsEntry implements BaseColumns {
+    public static final class FriendsEntry implements BaseColumns {
         static final Uri CONTENT_URI =
                 BASE_CONTENT_URI.buildUpon().appendPath(PATH_FRIENDS).build();
 
@@ -291,23 +421,23 @@ class SportContract {
             return uri.getPathSegments().get(uri.getPathSegments().size()-1);
         }
 
-        static final String TABLE_NAME = "friends";
+        public static final String TABLE_NAME = "friends";
 
         /*Player foreign key*/
-        static final String COLUMN_FROM = "req_from";
+        public static final String COLUMN_FROM = "req_from";
 
         /*Player foreign key*/
-        static final String COLUMN_TO = "req_to";
+        public static final String COLUMN_TO = "req_to";
 
         /* fase boolean status 0 for false, 1 for true*/
-        static final String COLUMN_STATUS = "status";
+        public static final String COLUMN_STATUS = "status";
     }
 
     /**
      * Inner class that defines the table contents of attributes table
      * These attributes are a average of other players about one.
      **/
-    static final class AttributesEntry implements BaseColumns {
+    public static final class AttributesEntry implements BaseColumns {
         static final Uri CONTENT_URI =
                 BASE_CONTENT_URI.buildUpon().appendPath(PATH_ATTRIBUTES).build();
 
@@ -317,34 +447,37 @@ class SportContract {
         static final String CONTENT_ITEM_TYPE =
                 ContentResolver.CURSOR_ITEM_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_ATTRIBUTES;
 
-        static Uri buildAttributesUri(long id) {
+        public static Uri buildAttributesUri() {
+            return CONTENT_URI;
+        }
+        public static Uri buildAttributesUri(long id) {
             return ContentUris.withAppendedId(CONTENT_URI, id);
         }
-        static String getIdFromUri(Uri uri) {
+        public static String getIdFromUri(Uri uri) {
             return uri.getPathSegments().get(uri.getPathSegments().size()-1);
         }
 
-        static final String TABLE_NAME = "attributes";
+        public static final String TABLE_NAME = "attributes";
 
         /*Player foreign key*/
-        static final String COLUMN_PLAYER_ID = "player_id";
+        public static final String COLUMN_PLAYER_ID = "player_id";
 
-        static final String COLUMN_SPEED = "speed";
+        public static final String COLUMN_SPEED = "speed";
 
-        static final String COLUMN_POWER = "power";
+        public static final String COLUMN_POWER = "power";
 
-        static final String COLUMN_TECHNIQUE = "technique";
+        public static final String COLUMN_TECHNIQUE = "technique";
 
-        static final String COLUMN_FITNESS = "fitness";
+        public static final String COLUMN_FITNESS = "fitness";
 
-        static final String COLUMN_FAIR_PLAY = "fair_player";
+        public static final String COLUMN_FAIR_PLAY = "fair_player";
     }
 
     /**
      * Inner class that defines the table contents of photos table
      * These attributes are a average of other players about one.
      **/
-    static final class PhotosEntry implements BaseColumns {
+    public static final class PhotosEntry implements BaseColumns {
         static final Uri CONTENT_URI =
                 BASE_CONTENT_URI.buildUpon().appendPath(PATH_PHOTOS).build();
 
@@ -361,12 +494,12 @@ class SportContract {
             return uri.getPathSegments().get(uri.getPathSegments().size()-1);
         }
 
-        static final String TABLE_NAME = "photos";
+        public static final String TABLE_NAME = "photos";
 
         /*Venue foreign key*/
-        static final String COLUMN_VENUE_ID = "venue_id";
+        public static final String COLUMN_VENUE_ID = "venue_id";
 
-        static final String COLUMN_URL = "photo_url";
+        public static final String COLUMN_URL = "photo_url";
 
     }
 }

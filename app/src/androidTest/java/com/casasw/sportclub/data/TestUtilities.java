@@ -74,8 +74,8 @@ public class TestUtilities {
                     "." + SportContract.PhotosEntry.COLUMN_URL
     };
 
-    /* jogador e amigo*/
-    static final String[] PLAYER_FRIENDS_ATTRIBUTES = {
+    /* jogador, atributos, esporte*/
+    static final String[] PLAYER_SPORTS_ATTRIBUTES = {
             SportContract.PlayerEntry.TABLE_NAME +
                     "." + SportContract.PlayerEntry._ID,
             SportContract.PlayerEntry.TABLE_NAME +
@@ -83,7 +83,7 @@ public class TestUtilities {
             SportContract.PlayerEntry.TABLE_NAME +
                     "." + SportContract.PlayerEntry.COLUMN_HANDEDNESS,
             SportContract.PlayerEntry.TABLE_NAME +
-                    "." + SportContract.PlayerEntry.COLUMN_AGE,
+                    "." + SportContract.PlayerEntry.COLUMN_BDAY,
             SportContract.PlayerEntry.TABLE_NAME +
                     "." + SportContract.PlayerEntry.COLUMN_HEIGHT,
             SportContract.PlayerEntry.TABLE_NAME +
@@ -106,12 +106,10 @@ public class TestUtilities {
                     "." + SportContract.AttributesEntry.COLUMN_FITNESS,
             SportContract.AttributesEntry.TABLE_NAME +
                     "." + SportContract.AttributesEntry.COLUMN_FAIR_PLAY,
-            SportContract.FriendsEntry.TABLE_NAME +
-                    "." + SportContract.FriendsEntry.COLUMN_TO,
-            SportContract.FriendsEntry.TABLE_NAME +
-                    "." + SportContract.FriendsEntry.COLUMN_FROM,
-            SportContract.FriendsEntry.TABLE_NAME +
-                    "." + SportContract.FriendsEntry.COLUMN_STATUS
+            SportContract.SportsEntry.TABLE_NAME +
+                    "." + SportContract.SportsEntry.COLUMN_NAME,
+            SportContract.SportsEntry.TABLE_NAME +
+                    "." + SportContract.SportsEntry.COLUMN_STATUS
 
     };
 
@@ -187,12 +185,13 @@ public class TestUtilities {
         values.put(SportContract.PlayerEntry.COLUMN_PLAYER_NAME, "Josivaldo "+random);
         values.put(SportContract.PlayerEntry.COLUMN_POSITION, "AMF");
         values.put(SportContract.PlayerEntry.COLUMN_HANDEDNESS, "R");
-        values.put(SportContract.PlayerEntry.COLUMN_AGE, "27");
+        values.put(SportContract.PlayerEntry.COLUMN_BDAY, "27/03/1970");
         values.put(SportContract.PlayerEntry.COLUMN_HEIGHT, "179");
         values.put(SportContract.PlayerEntry.COLUMN_WEIGHT, "80");
         values.put(SportContract.PlayerEntry.COLUMN_CITY, "Josivaldo City");
+        values.put(SportContract.PlayerEntry.COLUMN_STATE, "Josivaldo City's State");
         values.put(SportContract.PlayerEntry.COLUMN_RATING, "7");
-        values.put(SportContract.PlayerEntry.COLUMN_EMAIL, "josivaldo@josivaldo.com");
+        values.put(SportContract.PlayerEntry.COLUMN_EMAIL, "josivaldo"+random+"@josivaldo.com");
         values.put(SportContract.PlayerEntry.COLUMN_PROFILE_PHOTO, "http://www.profiles.com/12345677873");
         return values;
     }
@@ -203,6 +202,7 @@ public class TestUtilities {
         values.put(SportContract.TeamEntry.COLUMN_TEAM_NAME, "Josivaldo Team "+random);
         values.put(SportContract.TeamEntry.COLUMN_ADM_ID, ""+adm_id);
         values.put(SportContract.TeamEntry.COLUMN_CITY, "Josivaldo City");
+        values.put(SportContract.TeamEntry.COLUMN_STATE, "Josivaldo City's State");
         values.put(SportContract.TeamEntry.COLUMN_RATING, "7");
         return values;
     }
@@ -218,6 +218,7 @@ public class TestUtilities {
         values.put(SportContract.VenueEntry.COLUMN_TELEPHONE, "+44 161 605 8200"); // +55 12 3101 3293 BR +1 423 267 3585 +54 US 9 351 676 3617 ARG
         values.put(SportContract.VenueEntry.COLUMN_EMAIL, "josivaldo_place@josivaldo.com");
         values.put(SportContract.VenueEntry.COLUMN_CITY, "Josivaldo City");
+        values.put(SportContract.VenueEntry.COLUMN_STATE, "Josivaldo City's State");
 
         return values;
     }
@@ -228,8 +229,18 @@ public class TestUtilities {
         values.put(SportContract.CommentariesEntry.COLUMN_VENUE_ID, ""+venue_id);
         values.put(SportContract.CommentariesEntry.COLUMN_COMMENTARY, "Such a wonderplace, best pitch in the city!");
         values.put(SportContract.CommentariesEntry.COLUMN_PARENT_ID, ""+parent_id);
+        values.put(SportContract.CommentariesEntry.COLUMN_DATE, "01/01/201 01:01");
         values.put(SportContract.CommentariesEntry.COLUMN_RATING, "10");
 
+        return values;
+    }
+
+    static ContentValues createSportValues() {
+        ContentValues values = new ContentValues();
+        String[] sports = new String[]{"Soccer", "Basketball"};
+        int random = (int) Math.round(Math.random());
+        values.put(SportContract.SportsEntry.COLUMN_NAME, sports[random]);
+        values.put(SportContract.SportsEntry.COLUMN_STATUS,"on");
         return values;
     }
 
@@ -239,6 +250,23 @@ public class TestUtilities {
         values.put(SportContract.PlayerTeamEntry.COLUMN_TEAM_ID, ""+team_id);
         values.put(SportContract.PlayerTeamEntry.COLUMN_MATCHES, "5");
         values.put(SportContract.PlayerTeamEntry.COLUMN_RATING, "6,5");
+
+        return values;
+    }
+    
+    static ContentValues createPlayerSportValues(long player_id, long sport_id) {
+        ContentValues values = new ContentValues();
+        values.put(SportContract.PlayerSportEntry.COLUMN_PLAYER_ID, ""+player_id);
+        values.put(SportContract.PlayerSportEntry.COLUMN_SPORT_ID, ""+sport_id);
+        values.put(SportContract.PlayerSportEntry.COLUMN_POSITIONS, "SA-CF");
+
+        return values;
+    }
+
+    static ContentValues createVenueSportValues(long venue_id, long sport_id) {
+        ContentValues values = new ContentValues();
+        values.put(SportContract.VenueSportEntry.COLUMN_VENUE_ID, ""+venue_id);
+        values.put(SportContract.VenueSportEntry.COLUMN_SPORT_ID, ""+sport_id);
 
         return values;
     }

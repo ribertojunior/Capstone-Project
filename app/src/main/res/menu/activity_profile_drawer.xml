@@ -8,7 +8,7 @@
             android:title="@string/edit_profile_nav" />
         <item
             android:id="@+id/nav_preferrences"
-            android:icon="@android:drawable/ic_menu_manage"
+            android:icon="@drawable/ic_menu_manage"
             android:title="@string/preferences_nav" />
     </group>
 

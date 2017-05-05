@@ -37,7 +37,7 @@ public class ProviderTest {
                         appendPath(SportContract.PATH_PLAYER).build();
         assertTrue("Error: UriMatcher on Player failed: " +
                 uriPlayer.toString(), SportProvider.getsUriMatcher().match(uriPlayer) == SportProvider.PLAYER);
-        Uri uriPlayer_ID = SportContract.PlayerEntry.buildPlayerUri(123);
+        Uri uriPlayer_ID = SportContract.PlayerEntry.buildPlayerUriWithID(123);
         assertTrue("Error: UriMatcher on Player failed: " +
                 uriPlayer_ID.toString(), SportProvider.getsUriMatcher().match(uriPlayer_ID) == SportProvider.PLAYER_ID);
 

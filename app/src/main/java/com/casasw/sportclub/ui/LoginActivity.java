@@ -9,7 +9,10 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
+import android.widget.Toast;
 
+import com.casasw.sportclub.data.SportContract;
 import com.facebook.AccessToken;
 import com.facebook.AccessTokenTracker;
 import com.facebook.CallbackManager;
@@ -38,6 +41,8 @@ import org.json.JSONObject;
 
 import java.util.Arrays;
 
+import static com.casasw.sportclub.ui.Utility.isOnline;
+
 /**
  * A login screen that offers login via google/facebook.
  */
@@ -47,6 +52,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     static final String EXTRA_NAME = "NAME";
     static final String EXTRA_PHOTO = "PHOTO";
     static final String EXTRA_EMAIL = "EMAIL";
+    static final String EXTRA_URI = "URI";
 
     private CallbackManager callbackManager;
     private AccessTokenTracker accessTokenTracker;
@@ -61,34 +67,17 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+        View rootView = findViewById(android.R.id.content);
+        final ViewHolder viewHolder = new ViewHolder(rootView);
         OUT = false;
-        /*LinearLayout container = (LinearLayout) findViewById(R.id.login_container);
-        Drawable back;
-        int[] pool = {
-                R.drawable.back_00,
-                R.drawable.back_01,
-                R.drawable.back_02,
-                R.drawable.back_03,
-                R.drawable.back_04,
-                R.drawable.back_05,
-                R.drawable.back_06};
-        int index = (int) (Math.random()*7);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            back = getDrawable(pool[index]);
-        } else {
-            back = getResources().getDrawable(pool[index]);
-        }
-        container.setBackground(back);*/
-
-
 
         /*Facebook login*/
         callbackManager = CallbackManager.Factory.create();
-        LoginButton loginButton = (LoginButton) findViewById(R.id.login_button);
-        loginButton.setReadPermissions(Arrays.asList("email", "user_friends"));
+        //LoginButton loginButton = (LoginButton) findViewById(R.id.login_button);
+        viewHolder.mFacebookBtn.setReadPermissions(Arrays.asList("email", "user_friends"));
 
 
-        loginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
+        viewHolder.mFacebookBtn.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {
                 facebookLoginSuccess(loginResult);
@@ -111,9 +100,9 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                                                        AccessToken currentAccessToken) {
                 if (currentAccessToken == null) {
                     OUT = false;
-                    findViewById(R.id.sign_out_button).setVisibility(View.GONE);
-                    findViewById(R.id.sign_in_button).setVisibility(View.VISIBLE);
-                    findViewById(R.id.login_button).setVisibility(View.VISIBLE);
+                    viewHolder.mSignOut.setVisibility(View.GONE);
+                    viewHolder.mGoogleBtn.setVisibility(View.VISIBLE);
+                    viewHolder.mFacebookBtn.setVisibility(View.VISIBLE);
                     Intent intent = new Intent(LoginActivity.this, LoginActivity.class);
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NO_ANIMATION);
                     startActivity(intent);
@@ -137,11 +126,11 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                 .build();
 
         // Set the dimensions of the sign-in button.
-        SignInButton signInButton = (SignInButton) findViewById(R.id.sign_in_button);
-        signInButton.setSize(SignInButton.SIZE_STANDARD);
-        signInButton.setScopes(gso.getScopeArray());
+        //SignInButton signInButton = (SignInButton) findViewById(R.id.sign_in_button);
+        viewHolder.mGoogleBtn.setSize(SignInButton.SIZE_STANDARD);
+        viewHolder.mGoogleBtn.setScopes(gso.getScopeArray());
 
-        findViewById(R.id.sign_in_button).setOnClickListener(new View.OnClickListener() {
+        viewHolder.mGoogleBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
@@ -155,26 +144,47 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
             SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
             String account = prefs.getString(getString(R.string.pref_account_key), getString(R.string.pref_account_default));
             if (account.equals(getString(R.string.pref_account_google))) {
-                findViewById(R.id.sign_out_button).setVisibility(View.VISIBLE);
-                findViewById(R.id.login_button).setVisibility(View.GONE);
+                viewHolder.mSignOut.setVisibility(View.VISIBLE);
+                viewHolder.mFacebookBtn.setVisibility(View.GONE);
             }
-            findViewById(R.id.sign_in_button).setVisibility(View.GONE);
+            viewHolder.mGoogleBtn.setVisibility(View.GONE);
         }
 
-        if (isLoggedIn() && !OUT) {
-            findViewById(R.id.sign_in_button).setVisibility(View.GONE);
-            findViewById(R.id.sign_out_button).setVisibility(View.GONE);
+        if (isFacebookLoggedIn() && !OUT) {
+            viewHolder.mGoogleBtn.setVisibility(View.GONE);
+            viewHolder.mSignOut.setVisibility(View.GONE);
             Intent intent = new Intent(this, ProfileActivity.class);
             SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
             Bundle bundle = new Bundle();
             bundle.putString(EXTRA_NAME, prefs.getString(getString(R.string.pref_user_name_key), getString(R.string.error_name)));
             bundle.putString(EXTRA_EMAIL, prefs.getString(getString(R.string.pref_user_email_key), getString(R.string.error_email)));
+            bundle.putString(EXTRA_URI,
+                    SportContract.PlayerEntry
+                            .buildPlayerWithSportAndAttributes(
+                                    prefs.getString(getString(R.string.pref_user_email_key), getString(R.string.error_email))).toString());
             Profile profile = Profile.getCurrentProfile();
             bundle.putString(EXTRA_PHOTO,profile.getProfilePictureUri(100, 100).toString());
             intent.putExtras(bundle);
             startActivity(intent);
         }
 
+       if (!isOnline(this) && !isLoggedIn()) {
+            viewHolder.mGoogleBtn.setEnabled(false);
+            viewHolder.mFacebookBtn.setEnabled(false);
+            Toast.makeText(this, R.string.offline_error, Toast.LENGTH_LONG).show();
+        }
+
+        rootView.setTag(viewHolder);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        ViewHolder viewHolder = (ViewHolder) findViewById(android.R.id.content).getTag();
+        if (isOnline(this)) {
+            viewHolder.mGoogleBtn.setEnabled(true);
+            viewHolder.mFacebookBtn.setEnabled(true);
+        }
     }
 
     @Override
@@ -199,7 +209,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                 // If the user has not previously signed in on this device or the sign-in has expired,
                 // this asynchronous branch will attempt to sign in the user silently.  Cross-device
                 // single sign-on will occur in this branch.
-                showProgressDialog();
+                //showProgressDialog();
                 opr.setResultCallback(new ResultCallback<GoogleSignInResult>() {
                     @Override
                     public void onResult(@NonNull GoogleSignInResult googleSignInResult) {
@@ -232,11 +242,13 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     }
     private void handleSignInResult(GoogleSignInResult result) {
         Log.d(TAG, "handleSignInResult:" + result.isSuccess());
+        ViewHolder viewHolder = (ViewHolder) findViewById(android.R.id.content).getTag();
         if (result.isSuccess()) {
             // Signed in successfully, show authenticated UI.
             GoogleSignInAccount acct = result.getSignInAccount();
-            findViewById(R.id.sign_in_button).setVisibility(View.GONE);
-            findViewById(R.id.login_button).setVisibility(View.GONE);
+            if (acct==null) {Log.e(TAG, "handleSignInResult: Error account object is null.");return;}
+            viewHolder.mGoogleBtn.setVisibility(View.GONE);
+            viewHolder.mFacebookBtn.setVisibility(View.GONE);
             SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
             prefs.edit().putString(getString(R.string.pref_account_key),
                     getString(R.string.pref_account_google)).apply();
@@ -244,15 +256,20 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
             Bundle bundle = new Bundle();
             bundle.putString(EXTRA_NAME, acct.getDisplayName());
             bundle.putString(EXTRA_EMAIL, acct.getEmail());
-            bundle.putString(EXTRA_PHOTO,acct.getPhotoUrl().toString());
+            bundle.putParcelable(EXTRA_PHOTO,acct.getPhotoUrl());
+            bundle.putParcelable(EXTRA_URI,
+                    SportContract.PlayerEntry
+                            .buildPlayerWithSportAndAttributes(
+                                    acct.getEmail().replace("@", "(at)")));
             intent.putExtras(bundle);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NO_ANIMATION);
             startActivity(intent);
             //mStatusTextView.setText(getString(R.string.signed_in_fmt, acct.getDisplayName()));
             //updateUI(true);
         } else {
-            findViewById(R.id.sign_in_button).setVisibility(View.VISIBLE);
-            findViewById(R.id.login_button).setVisibility(View.VISIBLE);
-            findViewById(R.id.sign_out_button).setVisibility(View.GONE);
+            viewHolder.mGoogleBtn.setVisibility(View.VISIBLE);
+            viewHolder.mFacebookBtn.setVisibility(View.VISIBLE);
+            viewHolder.mSignOut.setVisibility(View.GONE);
             // Signed out, show unauthenticated UI.
             //updateUI(false);
         }
@@ -288,13 +305,14 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         Auth.GoogleSignInApi.signOut(mGoogleApiClient).setResultCallback(
                 new ResultCallback<Status>() {
                     @Override
-                    public void onResult(Status status) {
+                    public void onResult(@NonNull Status status) {
                         // [START_EXCLUDE]
                         hideProgressDialog();
                         OUT = false;
-                        findViewById(R.id.sign_out_button).setVisibility(View.GONE);
-                        findViewById(R.id.sign_in_button).setVisibility(View.VISIBLE);
-                        findViewById(R.id.login_button).setVisibility(View.VISIBLE);
+                        ViewHolder viewHolder = (ViewHolder) findViewById(android.R.id.content).getTag();
+                        viewHolder.mSignOut.setVisibility(View.GONE);
+                        viewHolder.mGoogleBtn.setVisibility(View.VISIBLE);
+                        viewHolder.mFacebookBtn.setVisibility(View.VISIBLE);
                         // [END_EXCLUDE]
                     }
                 });
@@ -305,10 +323,23 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NO_ANIMATION);
         startActivity(intent);
     }
+
     private boolean isLoggedIn() {
+        AccessToken accesstoken = AccessToken.getCurrentAccessToken();
+        OptionalPendingResult<GoogleSignInResult> opr = Auth.GoogleSignInApi.silentSignIn(mGoogleApiClient);
+        boolean google = opr.isDone();
+        boolean facebook = false;
+        if (!(accesstoken == null || accesstoken.getPermissions().isEmpty())){
+            facebook = true;
+        }
+        return (facebook || google);
+    }
+
+    private boolean isFacebookLoggedIn() {
         AccessToken accesstoken = AccessToken.getCurrentAccessToken();
         return !(accesstoken == null || accesstoken.getPermissions().isEmpty());
     }
+
 
     private void facebookLoginSuccess(LoginResult loginResult) {
         showProgressDialog();
@@ -318,18 +349,20 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                 try {
                     Profile profile = Profile.getCurrentProfile();
                     SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(LoginActivity.this);
+                    ViewHolder viewHolder = (ViewHolder) findViewById(android.R.id.content).getTag();
                     Bundle bundle = new Bundle();
-                    findViewById(R.id.sign_in_button).setVisibility(View.GONE);
-                    findViewById(R.id.sign_out_button).setVisibility(View.GONE);
+                    viewHolder.mGoogleBtn.setVisibility(View.GONE);
+                    viewHolder.mSignOut.setVisibility(View.GONE);
                     Intent intent = new Intent(LoginActivity.this, ProfileActivity.class);
                     String aux = object.getString("name");
                     prefs.edit().putString(getString(R.string.pref_user_name_key), aux).apply();
                     bundle.putString(EXTRA_NAME, aux);
-                    aux = object.getString("email");
+                    aux = object.getString("email").replace("@","(at)");
                     prefs.edit().putString(getString(R.string.pref_user_name_key), aux).apply();
                     bundle.putString(EXTRA_EMAIL,aux);
                     bundle.putString(EXTRA_PHOTO,profile.getProfilePictureUri(100, 100).toString());
                     intent.putExtras(bundle);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NO_ANIMATION);
                     hideProgressDialog();
                     startActivity(intent);
 
@@ -345,6 +378,19 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(LoginActivity.this);
         prefs.edit().putString(getString(R.string.pref_account_key),
                 getString(R.string.pref_account_facebook)).apply();
+        hideProgressDialog();
+    }
+
+    private static class ViewHolder {
+        final SignInButton mGoogleBtn;
+        final LoginButton mFacebookBtn;
+        final Button mSignOut;
+
+        ViewHolder(View view){
+            mGoogleBtn = (SignInButton) view.findViewById(R.id.sign_in_button);
+            mFacebookBtn = (LoginButton) view.findViewById(R.id.login_button);
+            mSignOut = (Button) view.findViewById(R.id.sign_out_button);
+        }
     }
 }
 

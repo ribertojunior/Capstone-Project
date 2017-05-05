@@ -1,4 +1,4 @@
-<resources xmlns:android="http://schemas.android.com/apk/res/android">
+<resources>
     <item name="ic_menu_camera" type="drawable">@android:drawable/ic_menu_camera</item>
     <item name="ic_menu_gallery" type="drawable">@android:drawable/ic_menu_gallery</item>
     <item name="ic_menu_slideshow" type="drawable">@android:drawable/ic_menu_slideshow</item>
@@ -7,4 +7,6 @@
     <item name="ic_menu_send" type="drawable">@android:drawable/ic_menu_send</item>
     <item name="ic_menu_edit" type="drawable">@android:drawable/ic_menu_edit</item>
     <item name="ic_menu_help" type="drawable">@android:drawable/ic_menu_help</item>
+    <item name="ic_mail" type="drawable">@android:drawable/ic_dialog_email</item>
+    <item name="ic_location" type="drawable">@android:drawable/ic_lock_idle_alarm</item>
 </resources>

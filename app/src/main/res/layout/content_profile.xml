@@ -5,32 +5,194 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:layout_margin="@dimen/activity_vertical_margin"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="com.casasw.sportclub.ui.ProfileActivity"
-    tools:showIn="@layout/app_bar_profile">
-    <LinearLayout
+    >
+    <android.support.design.widget.AppBarLayout
+        android:id="@+id/app_bar_profile"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center_vertical">
-        <de.hdodenhof.circleimageview.CircleImageView
-            android:layout_width="100dp"
-            android:layout_height="100dp"
-            xmlns:app="http://schemas.android.com/apk/res-auto"
-            android:id="@+id/image_view_profile"
-            android:contentDescription="@string/profile_photo_desc"
-            tools:src="@drawable/logo"
-            app:border_width="2dp"
-            app:border_color="@color/colorAccent"/>
-        <TextView
-            android:layout_width="wrap_content"
+        android:theme="@style/AppTheme.Toolbar">
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar_profile"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/activity_vertical_margin"
-            android:id="@+id/text_view_name"
-            android:textAppearance="@style/Base.TextAppearance.AppCompat.Headline"
-            tools:text="Sport Club User"/>
-    </LinearLayout>
+            app:theme="@style/AppTheme.Toolbar"
+            app:layout_scrollFlags="scroll|enterAlways"
+            >
+            <de.hdodenhof.circleimageview.CircleImageView android:id="@+id/image_view_profile"
+                android:layout_width="100dp"
+                android:layout_height="?attr/listPreferredItemHeight"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="?attr/actionBarSize"
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:contentDescription="@string/profile_photo_desc"
+                tools:src="@drawable/logo"
+                app:border_width="2dp"
+                app:border_color="@color/colorAccent"
+                app:layout_scrollFlags="scroll|enterAlways" />
+        </android.support.v7.widget.Toolbar>
+    </android.support.design.widget.AppBarLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <TextView
+                android:id="@+id/text_view_name_toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:layout_marginStart="@dimen/activity_horizontal_margin"
+                android:layout_marginEnd="@dimen/activity_horizontal_margin"
+                android:textAppearance="@style/Base.TextAppearance.AppCompat.Headline"
+                android:gravity="center"
+                app:layout_scrollFlags="scroll|enterAlways"
+                tools:text="Sport Club User" />
+
+            <RatingBar
+                android:id="@+id/rating_bar_item"
+                android:layout_marginStart="@dimen/activity_horizontal_margin"
+                android:layout_marginEnd="@dimen/activity_horizontal_margin"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:isIndicator="true"
+                android:numStars="10"
+                android:theme="@style/RatingBar"/>
+
+
+            <LinearLayout
+                android:id="@+id/image_text_container"
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/activity_horizontal_margin"
+                android:layout_marginEnd="@dimen/activity_horizontal_margin"
+                android:gravity="start|center_vertical" />
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/activity_horizontal_margin"
+                android:layout_marginEnd="@dimen/activity_horizontal_margin"
+                android:gravity="start|center_vertical">
+
+                <ImageView
+                    android:id="@+id/image_view_item_check"
+                    android:layout_width="50dp"
+                    android:layout_height="?attr/listPreferredItemHeight"
+                    android:contentDescription="@string/item_image"
+                    tools:src="@drawable/back_00" />
+
+                <CheckBox
+                    android:id="@+id/check_box_item"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checked="false"
+                    android:text="@string/soccer"
+                    android:onClick="onCheckBoxClicked"
+                    android:layout_weight="2"/>
+
+                <CheckBox
+                    android:id="@+id/check_box_item2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checked="false"
+                    android:text="@string/basketball"
+                    android:onClick="onCheckBoxClicked"
+                    android:layout_weight="2"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/activity_horizontal_margin"
+                android:layout_marginEnd="@dimen/activity_horizontal_margin"
+                android:gravity="start|center_vertical">
+
+                <ImageView
+                    android:id="@+id/image_view_item_spinner"
+                    android:layout_width="50dp"
+                    android:layout_height="?attr/listPreferredItemHeight"
+                    android:contentDescription="@string/item_image"
+                    tools:src="@drawable/back_03" />
+
+
+                <Spinner
+                    android:id="@+id/spinner_soccer"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="2"/>
+
+                <Spinner
+                    android:id="@+id/spinner_basket"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="2"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/activity_horizontal_margin"
+                android:layout_marginEnd="@dimen/activity_horizontal_margin"
+                android:gravity="start|center_vertical"
+                >
+
+                <ImageView
+                    android:id="@+id/image_view_item_hand"
+                    android:layout_width="50dp"
+                    android:layout_height="?attr/listPreferredItemHeight"
+                    android:contentDescription="@string/item_image"
+                    tools:src="@drawable/back_01" />
+                <android.support.v4.widget.Space
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_weight="2"/>
+
+                <Spinner
+                    android:id="@+id/spinner_hand"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="2"
+                    />
+            </LinearLayout>
+            <LinearLayout
+                android:id="@+id/attributes_container"
+                android:orientation="horizontal" android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:baselineAligned="false">
+
+                <LinearLayout
+                    android:id="@+id/list_attributes"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                </LinearLayout>
+                <com.github.mikephil.charting.charts.RadarChart
+                    android:id="@+id/radar_item"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1">
+
+                </com.github.mikephil.charting.charts.RadarChart>
+
+            </LinearLayout>
+        </LinearLayout>
+
+
+
+    </ScrollView>
 
 
 </LinearLayout>

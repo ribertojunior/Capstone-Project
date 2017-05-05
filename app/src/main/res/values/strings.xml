@@ -32,6 +32,8 @@
     <string name="pref_user_email_key" translatable="false">user_email</string>
     <string name="error_name">Error</string>
     <string name="error_email">error@error.com</string>
+    <string name="pref_user_id_key" translatable="false">user_id</string>
+    <string name="pref_user_id_default" translatable="false">1</string>
 
     <!-- Strings related to Settings -->
 
@@ -109,6 +111,45 @@
     <string name="prefs_signout">Sign Out</string>
     <string name="logout_summary">Sign out of your account</string>
     <string name="sign_out">Sign Out</string>
+    <string name="item_image">Item image</string>
+    <string name="offline_error">You\'re offline.</string>
 
+    <!--Spinner-->
+    <string-array name="soccer_position_array">
+        <item>Goalkeeper</item>
+        <item>Center-Back</item>
+        <item>Full-Back</item>
+        <item>Center Midfield</item>
+        <item>Defensive Midfield</item>
+        <item>Attacking Midfield</item>
+        <item>Wide Midfield</item>
+        <item>Center Forward</item>
+        <item>Second Striker</item>
+        <item>Winger</item>
+    </string-array>
 
+    <string-array name="basket_position_array">
+        <item>Point Guard</item>
+        <item>Shooting Guard</item>
+        <item>Small Forward</item>
+        <item>Power Forward</item>
+        <item>Center</item>
+    </string-array>
+
+    <string-array name="hand_array">
+        <item>Right</item>
+        <item>Left</item>
+    </string-array>
+
+    <!--Supported sports Soccer Basketball-->
+    <string name="soccer">Soccer</string>
+    <string name="basketball">Basketball</string>
+
+    <!--default sport-->
+    <string name="none">none</string>
+    <string name="attribute_speed">Speed</string>
+    <string name="attribute_power">Power</string>
+    <string name="attributes_tech">Technique</string>
+    <string name="attribute_fit">Fitness</string>
+    <string name="attribute_fair">Fair Play</string>
 </resources>
