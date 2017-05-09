@@ -317,18 +317,15 @@ public class ProfileActivity extends AppCompatActivity
                     {COL_PLAYER_CITY, COL_PLAYER_STATE},
                     {COL_PLAYER_BDAY},
                     {COL_PLAYER_HEIGHT},
-                    {COL_PLAYER_WEIGHT},
-                    {COL_SPORTS_NAME},
-                    {COL_SPORTS_POSITON}};
-            int[] icons = new int[] {android.R.drawable.ic_dialog_email,
-                    android.R.drawable.ic_dialog_email,android.R.drawable.ic_dialog_email,
-                    android.R.drawable.ic_dialog_email, android.R.drawable.ic_dialog_email,
-                    android.R.drawable.ic_dialog_email,android.R.drawable.ic_dialog_email};
+                    {COL_PLAYER_WEIGHT}};
+            int[] icons = new int[] {R.drawable.ic_email,
+                    R.drawable.ic_place,R.drawable.ic_cake,
+                    R.drawable.ic_accessibility, R.drawable.ic_action_ruler};
             View item;
             ImageView imageView;
             TextView textView;
             TextView textView2;
-            for (int i=0;i<7;i++) {
+            for (int i=0;i<5;i++) {
                 item = LayoutInflater
                                 .from(this)
                                 .inflate(R.layout.item_image_text_text, null);
@@ -343,7 +340,7 @@ public class ProfileActivity extends AppCompatActivity
                 viewHolder.mImageTextContainer.addView(item);
             }
 
-            viewHolder.mImageViewCheck.setBackground(getResources().getDrawable(R.drawable.logo));
+            viewHolder.mImageViewCheck.setBackground(getResources().getDrawable(R.drawable.ic_action_ball));
             do{
                 String sport = data.getString(COL_SPORTS_NAME);
                 //Soccer Basketball
@@ -355,6 +352,7 @@ public class ProfileActivity extends AppCompatActivity
                 }
             }while (data.moveToNext());
             data.moveToFirst();
+            viewHolder.mImageViewSpinner.setBackground(getResources().getDrawable(R.drawable.ic_fiber_manual_record));
             ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
                             R.array.soccer_position_array, android.R.layout.simple_spinner_item);
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -364,10 +362,12 @@ public class ProfileActivity extends AppCompatActivity
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             viewHolder.mBasketSpinner.setAdapter(adapter);
 
+            viewHolder.mImageViewHand.setBackground(getResources().getDrawable(R.drawable.ic_pan_tool));
             adapter = ArrayAdapter.createFromResource(this,
                     R.array.hand_array, android.R.layout.simple_spinner_item);
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             viewHolder.mHandSpinner.setAdapter(adapter);
+            // I need to check which one is selected
 
             int [] columns_attr = new int[]{
                     COL_ATTRIBUTES_SPEED,

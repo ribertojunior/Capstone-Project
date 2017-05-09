@@ -14,8 +14,10 @@
     <RatingBar
         android:id="@+id/rating_bar_attributes"
         android:numStars="10"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:isIndicator="true"
-        android:theme="@style/RatingBar"/>
+        android:theme="@style/RatingBar"
+        android:scaleX=".3"
+        android:scaleY=".3"/>
 </LinearLayout>
