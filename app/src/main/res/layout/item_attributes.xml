@@ -2,22 +2,43 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
-    android:layout_width="match_parent"
+    android:layout_width="wrap_content"
     android:layout_height="?attr/listPreferredItemHeight"
-    android:layout_marginStart="@dimen/activity_horizontal_margin"
-    android:layout_marginEnd="@dimen/activity_horizontal_margin">
+
+    >
     <TextView
         android:id="@+id/text_view_attributes"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:paddingEnd="8dp"
+        android:paddingStart="8dp"
         tools:text="Speed"/>
-    <RatingBar
-        android:id="@+id/rating_bar_attributes"
-        android:numStars="10"
+
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:isIndicator="true"
-        android:theme="@style/RatingBar"
-        android:scaleX=".3"
-        android:scaleY=".3"/>
+        android:orientation="horizontal"
+        android:paddingEnd="8dp"
+        android:paddingStart="8dp">
+
+        <ImageView
+            android:id="@+id/image_view_star"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:tint="@color/colorAccent"
+            android:contentDescription="@string/star_description"
+            android:background="@android:color/transparent"
+            android:src="@drawable/rate_star_full" />
+
+        <TextView
+            android:id="@+id/text_view_rating"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:layout_marginStart="8dp"
+
+            android:background="@android:color/transparent"
+            tools:text="7.0" />
+    </LinearLayout>
+
 </LinearLayout>

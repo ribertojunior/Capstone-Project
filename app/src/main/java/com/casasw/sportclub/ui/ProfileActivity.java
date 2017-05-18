@@ -25,12 +25,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RatingBar;
-import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -99,7 +97,9 @@ public class ProfileActivity extends AppCompatActivity
             SportContract.SportsEntry.TABLE_NAME +
                     "." + SportContract.SportsEntry.COLUMN_NAME,
             SportContract.SportsEntry.TABLE_NAME +
-                    "." + SportContract.SportsEntry.COLUMN_STATUS
+                    "." + SportContract.SportsEntry.COLUMN_STATUS,
+            SportContract.PlayerSportEntry.TABLE_NAME +
+                    "." + SportContract.PlayerSportEntry.COLUMN_POSITIONS
 
     };
 
@@ -121,7 +121,8 @@ public class ProfileActivity extends AppCompatActivity
     static final int COL_ATTRIBUTES_FIT = 14;
     static final int COL_ATTRIBUTES_FAIR = 15;
     static final int COL_SPORTS_NAME = 16;
-    static final int COL_SPORTS_POSITON = 17;
+    static final int COL_SPORTS_STATUS = 17;
+    static final int COL_SPORTS_POSITION = 18;
 
 
     @Override
@@ -231,6 +232,14 @@ public class ProfileActivity extends AppCompatActivity
                 .into(viewHolder.mProfilePhoto);
 
         viewHolder.mNameTextView.setText(mName);
+
+        viewHolder.mNoSport.setVisibility(View.VISIBLE);
+        viewHolder.mTextViewSoccer.setVisibility(View.GONE);
+        viewHolder.mTextViewBasket.setVisibility(View.GONE);
+        viewHolder.mTextViewSoccerPos.setVisibility(View.GONE);
+        viewHolder.mTextViewSoccerPos2.setVisibility(View.GONE);
+        viewHolder.mTextViewBasketPos.setVisibility(View.GONE);
+        viewHolder.mTextViewBasketPos2.setVisibility(View.GONE);
         rootView.setTag(viewHolder);
 
         getSupportLoaderManager().initLoader(LOADER_ID, null, this);
@@ -310,7 +319,8 @@ public class ProfileActivity extends AppCompatActivity
                 Log.d(TAG, "onLoadFinished: "+ data.getPosition());
             }
             ViewHolder viewHolder = new ViewHolder(findViewById(android.R.id.content));
-            viewHolder.mRatingUser.setRating(data.getFloat(COL_PLAYER_RATING));
+
+            viewHolder.mTextRating.setText(getString(R.string.format_rate,data.getFloat(COL_PLAYER_RATING)));
 
             int[][] columns = new int[][]{
                     {COL_PLAYER_EMAIL},
@@ -325,6 +335,13 @@ public class ProfileActivity extends AppCompatActivity
             ImageView imageView;
             TextView textView;
             TextView textView2;
+            String aux[][] = new String[][]{
+                    {""},
+                    {"Edit your city", "Edit your state"},
+                    {"e.g.: 01/10/1987"},
+                    {"e.g.: 5\" 9\'"},
+                    {"e.g.: 120 lbs"}};
+            String text;
             for (int i=0;i<5;i++) {
                 item = LayoutInflater
                                 .from(this)
@@ -332,10 +349,16 @@ public class ProfileActivity extends AppCompatActivity
                 imageView = (ImageView) item.findViewById(R.id.image_view_item);
                 imageView.setBackground(getResources().getDrawable(icons[i]));
                 textView = (TextView) item.findViewById(R.id.text_view_item);
-                textView.setText(data.getString(columns[i][0]));
+                text = data.getString(columns[i][0]);
+                if (text.equals(""))
+                    text = aux[i][0];
+                textView.setText(text);
                 if (i==1) {
                     textView2 = (TextView) item.findViewById(R.id.text_view_item2);
-                    textView2.setText(data.getString(columns[i][1]));
+                    text = data.getString(columns[i][1]);
+                    if (text.equals(""))
+                        text = aux[i][1];
+                    textView2.setText(text);
                 }
                 viewHolder.mImageTextContainer.addView(item);
             }
@@ -343,32 +366,56 @@ public class ProfileActivity extends AppCompatActivity
             viewHolder.mImageViewCheck.setBackground(getResources().getDrawable(R.drawable.ic_action_ball));
             do{
                 String sport = data.getString(COL_SPORTS_NAME);
+                String pos; String[] posV;
                 //Soccer Basketball
                 switch (sport){
                     case "Soccer":
-                        viewHolder.mSoccer.setChecked(true); break;
+                        viewHolder.mNoSport.setVisibility(View.GONE);
+                        viewHolder.mTextViewSoccer.setVisibility(View.VISIBLE);
+                        pos = data.getString(COL_SPORTS_POSITION);
+                        posV = pos.split("-");
+                        viewHolder.mTextViewSoccerPos.setVisibility(View.VISIBLE);
+                        viewHolder.mTextViewSoccerPos.setText(Utility.getSoccerPosition(posV[0], this));
+                        viewHolder.mTextViewSoccerPos2.setVisibility(View.VISIBLE);
+                        if (posV.length==2)
+                            viewHolder.mTextViewSoccerPos2.setText(Utility.getSoccerPosition(posV[1], this));
+                        //text position visibility
+                        break;
                     case "Basketball":
-                        viewHolder.mBasket.setChecked(true);break;
+                        viewHolder.mNoSport.setVisibility(View.GONE);
+                        viewHolder.mTextViewBasket.setVisibility(View.VISIBLE);
+                        pos = data.getString(COL_SPORTS_POSITION);
+                        posV = pos.split("-");
+                        viewHolder.mTextViewBasketPos.setVisibility(View.VISIBLE);
+                        viewHolder.mTextViewBasketPos.setText(Utility.getBasketPosition(posV[0], this));
+                        viewHolder.mTextViewBasketPos2.setVisibility(View.VISIBLE);
+                        if (posV.length==2)
+                            viewHolder.mTextViewBasketPos2.setText(Utility.getBasketPosition(posV[1], this));
+                        break;
                 }
             }while (data.moveToNext());
             data.moveToFirst();
-            viewHolder.mImageViewSpinner.setBackground(getResources().getDrawable(R.drawable.ic_fiber_manual_record));
+            /*viewHolder.mImageViewSpinner.setBackground(getResources().getDrawable(R.drawable.ic_fiber_manual_record));
             ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
                             R.array.soccer_position_array, android.R.layout.simple_spinner_item);
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-            viewHolder.mSoccerSpinner.setAdapter(adapter);
+            viewHolder.mTextViewSoccerPos.setAdapter(adapter);
             adapter = ArrayAdapter.createFromResource(this,
                             R.array.basket_position_array, android.R.layout.simple_spinner_item);
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-            viewHolder.mBasketSpinner.setAdapter(adapter);
+            viewHolder.mTextViewSoccerPos2.setAdapter(adapter);
 
             viewHolder.mImageViewHand.setBackground(getResources().getDrawable(R.drawable.ic_pan_tool));
             adapter = ArrayAdapter.createFromResource(this,
                     R.array.hand_array, android.R.layout.simple_spinner_item);
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-            viewHolder.mHandSpinner.setAdapter(adapter);
+            viewHolder.mTextViewHand.setAdapter(adapter);*/
             // I need to check which one is selected
-
+            viewHolder.mImageViewHand.setBackground(getResources().getDrawable(R.drawable.ic_pan_tool));
+            String hand = data.getString(COL_PLAYER_HAND);
+            if (hand.trim().equals(""))
+                hand = getString(R.string.hand_default);
+            viewHolder.mTextViewHand.setText(hand);
             int [] columns_attr = new int[]{
                     COL_ATTRIBUTES_SPEED,
                     COL_ATTRIBUTES_POWER,
@@ -379,7 +426,8 @@ public class ProfileActivity extends AppCompatActivity
                     getString(R.string.attributes_tech), getString(R.string.attribute_fit),
                     getString(R.string.attribute_fair)};
             RatingBar ratingBar;
-            int[] ratings = new int[5];
+            TextView  rate;
+            float[] ratings = new float[5];
 
             for (int i=0;i<5;i++) {
                 item = LayoutInflater
@@ -387,9 +435,9 @@ public class ProfileActivity extends AppCompatActivity
                         .inflate(R.layout.item_attributes, null);
                 textView = (TextView) item.findViewById(R.id.text_view_attributes);
                 textView.setText(columns_names[i]);
-                ratingBar = (RatingBar) item.findViewById(R.id.rating_bar_attributes);
-                ratings[i] = data.getInt(columns_attr[i]);
-                ratingBar.setRating(data.getFloat(columns_attr[i]));
+                rate = (TextView) item.findViewById(R.id.text_view_rating);
+                ratings[i] = data.getFloat(columns_attr[i]);
+                rate.setText(getString(R.string.format_rate,data.getFloat(columns_attr[i])));
                 viewHolder.mAttributes.addView(item);
             }
 
@@ -454,7 +502,7 @@ public class ProfileActivity extends AppCompatActivity
         boolean checked = ((CheckBox) view).isChecked();
 
         switch (view.getId()) {
-            case R.id.check_box_item:
+            case R.id.text_view_soccer:
                 if (BuildConfig.DEBUG){
                     Log.d(TAG, "onCheckBoxClicked - Soccer checkbox: " + checked);
                 }
@@ -466,7 +514,7 @@ public class ProfileActivity extends AppCompatActivity
                     //remove soccer in player_sport
                 }
                 break;
-            case R.id.check_box_item2:
+            case R.id.text_view_basket:
                 if (BuildConfig.DEBUG){
                     Log.d(TAG, "onCheckBoxClicked - Basket checkbox" + checked);
                 }
@@ -494,11 +542,11 @@ public class ProfileActivity extends AppCompatActivity
 
     }
 
-    public RadarData setData(int[] ratings) {
+    public RadarData setData(float[] ratings) {
         ArrayList<RadarEntry> entries1 = new ArrayList<RadarEntry>();
         // NOTE: The order of the entries when being added to the entries array determines their position around the center of
         // the chart.
-        for (int rating : ratings) {
+        for (float rating : ratings) {
             entries1.add(new RadarEntry(rating));
         }
 
@@ -529,16 +577,19 @@ public class ProfileActivity extends AppCompatActivity
         final NavigationView mNavigationView;
         final ImageView mProfilePhoto;
         final TextView mNameTextView;
-        final RatingBar mRatingUser;
+        final ImageView mImageStarRating;
+        final TextView mTextRating;
         final LinearLayout mImageTextContainer;
         final ImageView mImageViewCheck;
-        final CheckBox mSoccer;
-        final CheckBox mBasket;
-        final ImageView mImageViewSpinner;
-        final Spinner mSoccerSpinner;
-        final Spinner mBasketSpinner;
+        final TextView mNoSport;
+        final TextView mTextViewSoccer;
+        final TextView mTextViewBasket;
+        final TextView mTextViewSoccerPos;
+        final TextView mTextViewSoccerPos2;
+        final TextView mTextViewBasketPos;
+        final TextView mTextViewBasketPos2;
         final ImageView mImageViewHand;
-        final Spinner mHandSpinner;
+        final TextView mTextViewHand;
         final LinearLayout mAttributes;
         final RadarChart mRadar;
 
@@ -546,16 +597,19 @@ public class ProfileActivity extends AppCompatActivity
             mNavigationView = (NavigationView) view.findViewById(R.id.nav_view);
             mProfilePhoto = (ImageView) view.findViewById(R.id.image_view_profile);
             mNameTextView = (TextView) view.findViewById(R.id.text_view_name_toolbar);
-            mRatingUser = (RatingBar) view.findViewById(R.id.rating_bar_item);
+            mImageStarRating = (ImageView) view.findViewById(R.id.image_view_star);
+            mTextRating = (TextView) view.findViewById(R.id.text_view_rating);
             mImageTextContainer = (LinearLayout) view.findViewById(R.id.image_text_container);
             mImageViewCheck = (ImageView) view.findViewById(R.id.image_view_item_check);
-            mSoccer = (CheckBox) view.findViewById(R.id.check_box_item);
-            mBasket = (CheckBox) view.findViewById(R.id.check_box_item2);
-            mImageViewSpinner = (ImageView) view.findViewById(R.id.image_view_item_spinner);
-            mSoccerSpinner = (Spinner) view.findViewById(R.id.spinner_soccer);
-            mBasketSpinner = (Spinner) view.findViewById(R.id.spinner_basket);
+            mNoSport = (TextView) view.findViewById(R.id.text_view_no_sport);
+            mTextViewSoccer = (TextView) view.findViewById(R.id.text_view_soccer);
+            mTextViewBasket = (TextView) view.findViewById(R.id.text_view_basket);
+            mTextViewSoccerPos = (TextView) view.findViewById(R.id.text_view_soccer_pos1);
+            mTextViewSoccerPos2 = (TextView) view.findViewById(R.id.text_view_soccer_pos2);
+            mTextViewBasketPos = (TextView) view.findViewById(R.id.text_view_basket_pos1);
+            mTextViewBasketPos2 = (TextView) view.findViewById(R.id.text_view_basket_pos2);
             mImageViewHand = (ImageView) view.findViewById(R.id.image_view_item_hand);
-            mHandSpinner = (Spinner) view.findViewById(R.id.spinner_hand);
+            mTextViewHand = (TextView) view.findViewById(R.id.text_view_hand);
             mAttributes = (LinearLayout) view.findViewById(R.id.list_attributes);
             mRadar = (RadarChart) view.findViewById(R.id.radar_item);
         }

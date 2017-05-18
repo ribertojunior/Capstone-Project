@@ -72,8 +72,6 @@ public class SportContract {
 
         public static final String COLUMN_PLAYER_NAME = "player_name";
 
-        public static final String COLUMN_POSITION = "position";
-
         public static final String COLUMN_HANDEDNESS = "handedness";
 
         public static final String COLUMN_BDAY = "bday";

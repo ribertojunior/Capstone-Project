@@ -91,6 +91,8 @@ public class TestUtilities {
             SportContract.PlayerEntry.TABLE_NAME +
                     "." + SportContract.PlayerEntry.COLUMN_CITY,
             SportContract.PlayerEntry.TABLE_NAME +
+                    "." + SportContract.PlayerEntry.COLUMN_STATE,
+            SportContract.PlayerEntry.TABLE_NAME +
                     "." + SportContract.PlayerEntry.COLUMN_RATING,
             SportContract.PlayerEntry.TABLE_NAME +
                     "." + SportContract.PlayerEntry.COLUMN_EMAIL,
@@ -109,7 +111,9 @@ public class TestUtilities {
             SportContract.SportsEntry.TABLE_NAME +
                     "." + SportContract.SportsEntry.COLUMN_NAME,
             SportContract.SportsEntry.TABLE_NAME +
-                    "." + SportContract.SportsEntry.COLUMN_STATUS
+                    "." + SportContract.SportsEntry.COLUMN_STATUS,
+            SportContract.PlayerSportEntry.TABLE_NAME +
+                    "." + SportContract.PlayerSportEntry.COLUMN_POSITIONS
 
     };
 
@@ -183,7 +187,6 @@ public class TestUtilities {
         ContentValues values = new ContentValues();
         int random = (int) Math.floor(Math.random()*100);
         values.put(SportContract.PlayerEntry.COLUMN_PLAYER_NAME, "Josivaldo "+random);
-        values.put(SportContract.PlayerEntry.COLUMN_POSITION, "AMF");
         values.put(SportContract.PlayerEntry.COLUMN_HANDEDNESS, "R");
         values.put(SportContract.PlayerEntry.COLUMN_BDAY, "27/03/1970");
         values.put(SportContract.PlayerEntry.COLUMN_HEIGHT, "179");

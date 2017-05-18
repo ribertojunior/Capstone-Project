@@ -11,6 +11,9 @@ import android.util.Log;
 
 import com.casasw.sportclub.data.SportContract;
 
+import java.util.Arrays;
+import java.util.List;
+
 /**
  * Created by Junior on 02/05/2017.
  * Some often used methods
@@ -32,7 +35,6 @@ class Utility {
     static ContentValues createPlayerValues(String name, String photo, String email) {
         ContentValues values = new ContentValues();
         values.put(SportContract.PlayerEntry.COLUMN_PLAYER_NAME, name);
-        values.put(SportContract.PlayerEntry.COLUMN_POSITION, "");
         values.put(SportContract.PlayerEntry.COLUMN_HANDEDNESS, "");
         values.put(SportContract.PlayerEntry.COLUMN_BDAY, "");
         values.put(SportContract.PlayerEntry.COLUMN_HEIGHT, "");
@@ -85,5 +87,21 @@ class Utility {
         }while (c.moveToNext());
         Log.d(LOG_TAG, col);
         Log.d(LOG_TAG, values);
+    }
+
+    static String getSoccerPosition(String posAbbrev, Context context) {
+        final List<String> listPosAbbrev = Arrays.asList(context.getResources().getStringArray(R.array.soccer_position_abbrev));
+        List<String> listPos = Arrays.asList(context.getResources().getStringArray(R.array.soccer_position_array));
+        int i = listPosAbbrev.indexOf(posAbbrev);
+
+        return listPos.get(i);
+    }
+
+    static String getBasketPosition(String posAbbrev, Context context) {
+        final List<String> listPosAbbrev = Arrays.asList(context.getResources().getStringArray(R.array.basket_position_abbrev));
+        List<String> listPos = Arrays.asList(context.getResources().getStringArray(R.array.basket_position_array));
+        int i = listPosAbbrev.indexOf(posAbbrev);
+
+        return listPos.get(i);
     }
 }

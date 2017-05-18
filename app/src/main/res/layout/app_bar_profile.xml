@@ -11,6 +11,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:theme="@style/AppTheme.Toolbar"
+        app:elevation="0dp"
+
         >
 
         <android.support.v7.widget.Toolbar
@@ -18,26 +20,10 @@
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:background="?attr/colorPrimary"
+            app:elevation="0dp"
             app:popupTheme="@style/AppTheme.PopupOverlay" >
 
-            <ImageView
-                android:layout_width="?attr/actionBarSize"
-                android:layout_height="?attr/actionBarSize"
-                android:src="@drawable/logo"
-                android:layout_gravity="start"
-                android:contentDescription="@string/logo_description"
-                android:background="@color/colorPrimary"
-                />
 
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="?attr/actionBarSize"
-                android:paddingStart="@dimen/activity_vertical_margin"
-                android:src="@drawable/app_name"
-                android:layout_gravity="start"
-                android:contentDescription="@string/app_name"
-                android:background="@color/colorPrimary"
-                />
 
 
         </android.support.v7.widget.Toolbar>

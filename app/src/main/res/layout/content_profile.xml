@@ -19,48 +19,57 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:theme="@style/AppTheme.Toolbar"
-            app:layout_scrollFlags="scroll|enterAlways"
             >
             <ImageView
                 android:id="@+id/image_view_profile"
                 android:layout_width="100dp"
-                android:layout_height="?attr/listPreferredItemHeight"
+                android:layout_height="100dp"
                 android:layout_gravity="start"
-                xmlns:app="http://schemas.android.com/apk/res-auto"
                 android:contentDescription="@string/profile_photo_desc"
                 tools:src="@drawable/logo"
-                app:border_width="2dp"
-                app:border_color="@color/colorAccent"
-                app:layout_scrollFlags="scroll|enterAlways" />
+                android:background="@android:color/transparent"
+                 />
 
             <LinearLayout
                 android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                >
                 <TextView
                     android:id="@+id/text_view_name_toolbar"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/activity_horizontal_margin"
-                    android:textAppearance="@style/Base.TextAppearance.AppCompat.Subhead"
+                    android:textAppearance="@style/Base.TextAppearance.AppCompat.Headline"
+                    android:background="@android:color/transparent"
                     android:gravity="center_vertical"
-                    app:layout_scrollFlags="scroll|enterAlways"
                     tools:text="Sport Club User" />
 
-                <RatingBar
-                    android:id="@+id/rating_bar_item"
-                    android:layout_marginStart="@dimen/activity_horizontal_margin"
+                <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:isIndicator="true"
-                    android:numStars="10"
-                    android:theme="@style/RatingBar"
-                     />
+                    android:orientation="horizontal"
+                    android:background="@android:color/transparent">
+
+                    <ImageView
+                        android:id="@+id/image_view_star"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:layout_marginStart="@dimen/activity_horizontal_margin"
+                        android:tint="@color/colorAccent"
+                        android:background="@android:color/transparent"
+                        android:src="@drawable/rate_star_full" />
+                    <TextView
+                        android:id="@+id/text_view_rating"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:textAppearance="@style/Base.TextAppearance.AppCompat.Headline"
+                        android:background="@android:color/transparent"
+                        tools:text="7.0"/>
+                </LinearLayout>
+
             </LinearLayout>
-            <android.support.v4.widget.Space
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:layout_weight="1"/>
 
         </android.support.v7.widget.Toolbar>
     </android.support.design.widget.AppBarLayout>
@@ -74,131 +83,174 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-
-
-            <LinearLayout
-                android:id="@+id/image_text_container"
-                android:orientation="vertical"
+            <android.support.v7.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/activity_horizontal_margin"
-                android:layout_marginEnd="@dimen/activity_horizontal_margin"
-                android:gravity="start|center_vertical" />
-
-            <LinearLayout
-                android:orientation="horizontal"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/activity_horizontal_margin"
-                android:layout_marginEnd="@dimen/activity_horizontal_margin"
-                android:gravity="start|center_vertical">
-
-                <ImageView
-                    android:id="@+id/image_view_item_check"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:contentDescription="@string/item_image"
-                    tools:src="@drawable/back_00" />
-
-                <CheckBox
-                    android:id="@+id/check_box_item"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:checked="false"
-                    android:text="@string/soccer"
-                    android:onClick="onCheckBoxClicked"
-                    android:layout_weight="2"/>
-
-                <CheckBox
-                    android:id="@+id/check_box_item2"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:checked="false"
-                    android:text="@string/basketball"
-                    android:onClick="onCheckBoxClicked"
-                    android:layout_weight="2"/>
-            </LinearLayout>
-
-            <LinearLayout
-                android:orientation="horizontal"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/activity_horizontal_margin"
-                android:layout_marginEnd="@dimen/activity_horizontal_margin"
-                android:gravity="start|center_vertical">
-
-                <ImageView
-                    android:id="@+id/image_view_item_spinner"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:contentDescription="@string/item_image"
-                    tools:src="@drawable/back_03" />
-
-
-                <Spinner
-                    android:id="@+id/spinner_soccer"
+                android:layout_margin="@dimen/activity_horizontal_margin">
+                <LinearLayout
+                    android:id="@+id/image_text_container"
+                    android:orientation="vertical"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="2"/>
+                    android:layout_marginStart="@dimen/activity_horizontal_margin"
+                    android:layout_marginEnd="@dimen/activity_horizontal_margin"
+                    android:gravity="start|center_vertical" />
+            </android.support.v7.widget.CardView>
 
-                <Spinner
-                    android:id="@+id/spinner_basket"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="2"/>
-            </LinearLayout>
 
-            <LinearLayout
-                android:orientation="horizontal"
+            <android.support.v7.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/activity_horizontal_margin"
-                android:layout_marginEnd="@dimen/activity_horizontal_margin"
-                android:gravity="start|center_vertical"
-                >
-
-                <ImageView
-                    android:id="@+id/image_view_item_hand"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:contentDescription="@string/item_image"
-                    tools:src="@drawable/back_01" />
-                <android.support.v4.widget.Space
-                    android:layout_width="0dp"
-                    android:layout_height="0dp"
-                    android:layout_weight="2"/>
-
-                <Spinner
-                    android:id="@+id/spinner_hand"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="2"
-                    />
-            </LinearLayout>
-            <LinearLayout
-                android:id="@+id/attributes_container"
-                android:orientation="horizontal" android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:baselineAligned="false">
+                android:layout_margin="@dimen/activity_horizontal_margin">
 
                 <LinearLayout
-                    android:id="@+id/list_attributes"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/activity_horizontal_margin"
+                    android:layout_marginEnd="@dimen/activity_horizontal_margin"
+                    android:gravity="start|center_vertical">
+
+                    <ImageView
+                        android:id="@+id/image_view_item_check"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:contentDescription="@string/item_image"
+                        tools:src="@drawable/back_00" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="@style/Base.TextAppearance.AppCompat.Subhead"
+                        android:text="@string/sports_positions_title" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/text_view_no_sport"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:visibility="gone"
+                            android:text="@string/choose_a_sport_on_edit_profile" />
+
+                        <TextView
+                            android:id="@+id/text_view_soccer"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:visibility="visible"
+                            android:text="@string/soccer" />
+
+                        <TextView
+                            android:id="@+id/text_view_basket"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:visibility="visible"
+                            android:text="@string/basketball" />
+                    </LinearLayout>
+
+                    <RelativeLayout
+                        android:orientation="vertical"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="start|center_vertical">
+
+                        <TextView
+                            android:id="@+id/text_view_soccer_pos1"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentStart="true"
+                            tools:text="Goalkeeper" />
+
+                        <TextView
+                            android:id="@+id/text_view_soccer_pos2"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@id/text_view_soccer_pos1"
+                            tools:text="Center Back" />
+
+                        <android.support.v4.widget.Space
+                            android:id="@+id/center_position"
+                            android:layout_width="0dp"
+                            android:layout_height="0dp"
+                            android:layout_centerInParent="true" />
+
+                        <TextView
+                            android:id="@+id/text_view_basket_pos1"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignStart="@id/center_position"
+                            tools:text="Point Guard" />
+
+                        <TextView
+                            android:id="@+id/text_view_basket_pos2"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@id/text_view_basket_pos1"
+                            android:layout_alignStart="@id/center_position"
+                            tools:text="Center" />
+                    </RelativeLayout>
+
+                    <ImageView
+                        android:id="@+id/image_view_item_hand"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:contentDescription="@string/item_image"
+                        tools:src="@drawable/back_01" />
+
+
+
+
+
+                        <TextView
+                            android:id="@+id/text_view_hand"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            tools:text="Right"/>
+
 
                 </LinearLayout>
-                <com.github.mikephil.charting.charts.RadarChart
-                    android:id="@+id/radar_item"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1">
+            </android.support.v7.widget.CardView>
 
-                </com.github.mikephil.charting.charts.RadarChart>
 
-            </LinearLayout>
+            <android.support.v7.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/activity_horizontal_margin">
+
+                <LinearLayout
+                    android:id="@+id/attributes_container"
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/activity_horizontal_margin"
+                    >
+
+                    <LinearLayout
+                        android:id="@+id/list_attributes"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical"
+                        android:gravity="center" />
+
+
+                    <com.github.mikephil.charting.charts.RadarChart
+                        android:id="@+id/radar_item"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_weight="3">
+
+
+                    </com.github.mikephil.charting.charts.RadarChart>
+
+                </LinearLayout>
+            </android.support.v7.widget.CardView>
+
         </LinearLayout>
 
 

@@ -76,7 +76,6 @@ public class DbTest {
         final HashSet<String> columnHashSet = new HashSet<>();
         columnHashSet.add(SportContract.PlayerEntry._ID);
         columnHashSet.add(SportContract.PlayerEntry.COLUMN_PLAYER_NAME);
-        columnHashSet.add(SportContract.PlayerEntry.COLUMN_POSITION);
         columnHashSet.add(SportContract.PlayerEntry.COLUMN_HANDEDNESS);
         columnHashSet.add(SportContract.PlayerEntry.COLUMN_BDAY);
         columnHashSet.add(SportContract.PlayerEntry.COLUMN_HEIGHT);
@@ -661,6 +660,58 @@ public class DbTest {
 
     @Test
     public void testPlayerSportInnerJoin(){
+        SQLiteDatabase db = new SportDbHelper(InstrumentationRegistry.getTargetContext()).getWritableDatabase();
+        ContentValues values = TestUtilities.createPlayerValues();
+        long inPlayer = db.insert(SportContract.PlayerEntry.TABLE_NAME, null, values);
+        values = TestUtilities.createSportValues();
+        long inSport = db.insert(SportContract.SportsEntry.TABLE_NAME, null, values);
+        values.put(SportContract.SportsEntry.COLUMN_NAME, "Baseball");
+        long inSport2 = db.insert(SportContract.SportsEntry.TABLE_NAME, null, values);
 
+        values = TestUtilities.createPlayerSportValues(inPlayer, inSport);
+        long inPlayerSport = db.insert(SportContract.PlayerSportEntry.TABLE_NAME, null, values);
+        values = TestUtilities.createPlayerSportValues(inPlayer, inSport2);
+        long inPlayerSport2 = db.insert(SportContract.PlayerSportEntry.TABLE_NAME, null, values);
+
+        values = TestUtilities.createAttributesValues(inPlayer);
+        long inAttr = db.insert(SportContract.AttributesEntry.TABLE_NAME, null, values);
+
+        /* jogador, atributo, jogador_esporte, esporte   */
+        SQLiteQueryBuilder sPlayerSportAttributes = new SQLiteQueryBuilder();
+        sPlayerSportAttributes.setTables(
+                SportContract.PlayerEntry.TABLE_NAME + " INNER JOIN " +
+                        SportContract.AttributesEntry.TABLE_NAME +
+                        " ON " + SportContract.PlayerEntry.TABLE_NAME +
+                        "." + SportContract.PlayerEntry._ID +
+                        " = " + SportContract.AttributesEntry.TABLE_NAME +
+                        "." + SportContract.AttributesEntry.COLUMN_PLAYER_ID +
+                        " INNER JOIN " +
+                        SportContract.PlayerSportEntry.TABLE_NAME +
+                        " ON " + SportContract.PlayerEntry.TABLE_NAME +
+                        "." + SportContract.PlayerEntry._ID +
+                        " = " + SportContract.PlayerSportEntry.TABLE_NAME +
+                        "." + SportContract.PlayerSportEntry.COLUMN_PLAYER_ID +
+                        " INNER JOIN " +
+                        SportContract.SportsEntry.TABLE_NAME +
+                        " ON " + SportContract.PlayerSportEntry.TABLE_NAME +
+                        "." + SportContract.PlayerSportEntry.COLUMN_SPORT_ID +
+                        " = " + SportContract.SportsEntry.TABLE_NAME +
+                        "." + SportContract.SportsEntry._ID
+
+
+        );
+        Log.d(TAG, "testInnerJoin: Player Sport Attributes inner join: "+sPlayerSportAttributes.getTables());
+        String selection = SportContract.PlayerEntry.TABLE_NAME +
+                "." + SportContract.PlayerEntry._ID + " = ?";
+        Log.d(TAG, "testInnerJoin: Player Sport Attributes inner join selection: "+selection);
+        String[] selectionArgs = new String[]{""+inPlayer};
+        Log.d(TAG, "testInnerJoin: Player Sport Attributes inner join selection args: " + selectionArgs[0]);
+        Cursor c = sPlayerSportAttributes.query(
+                db, TestUtilities.PLAYER_SPORTS_ATTRIBUTES, selection, selectionArgs,
+                null, null, null
+        );
+        assertTrue("Error: Player attributes friends inner join is returning no data.", c.moveToFirst());
+        Log.d(TAG, "testInnerJoin: Jogador, atributo e amigo");
+        TestUtilities.logCursor(c, TAG);
     }
 }

@@ -28,7 +28,6 @@ public class SportDbHelper extends SQLiteOpenHelper {
         final String SQL_CREATE_PLAYER_TABLE = "CREATE TABLE " + SportContract.PlayerEntry.TABLE_NAME + " (" +
                 SportContract.PlayerEntry._ID + " INTEGER PRIMARY KEY," +
                 SportContract.PlayerEntry.COLUMN_PLAYER_NAME + " TEXT NOT NULL, " +
-                SportContract.PlayerEntry.COLUMN_POSITION + " TEXT NOT NULL, " +
                 SportContract.PlayerEntry.COLUMN_HANDEDNESS + " TEXT NOT NULL, " +
                 SportContract.PlayerEntry.COLUMN_BDAY + " TEXT NOT NULL, " +
                 SportContract.PlayerEntry.COLUMN_HEIGHT + " REAL NOT NULL, " +
