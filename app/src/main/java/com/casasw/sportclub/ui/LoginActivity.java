@@ -70,7 +70,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         setContentView(R.layout.activity_login);
         View rootView = findViewById(android.R.id.content);
         /*ImageView logoLoading = (ImageView) findViewById(R.id.logo_loading);
-        Animation animationOut = AnimationUtils.loadAnimation(this, R.anim.pop_out);
+        Animation animationOut = AnimationUtils.loadAnimation(this, R.anim.zoom);
         Animation animationIn = AnimationUtils.loadAnimation(this, R.anim.pop_in);
         AnimationSet outIn = new AnimationSet(true);
         outIn.addAnimation(animationOut);
@@ -368,10 +368,14 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                     String aux = object.getString("name");
                     prefs.edit().putString(getString(R.string.pref_user_name_key), aux).apply();
                     bundle.putString(EXTRA_NAME, aux);
-                    aux = object.getString("email").replace("@","(at)");
-                    prefs.edit().putString(getString(R.string.pref_user_name_key), aux).apply();
+
+                    prefs.edit().putString(getString(R.string.pref_user_email_key), object.getString("email")).apply();
                     bundle.putString(EXTRA_EMAIL,aux);
                     bundle.putString(EXTRA_PHOTO,profile.getProfilePictureUri(100, 100).toString());
+                    bundle.putParcelable(EXTRA_URI,
+                            SportContract.PlayerEntry
+                                    .buildPlayerWithSportAndAttributes(
+                                            object.getString("email").replace("@","(at)")));
                     intent.putExtras(bundle);
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NO_ANIMATION);
                     hideProgressDialog();

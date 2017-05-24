@@ -115,7 +115,7 @@
 
     <!--Spinner-->
     <string-array name="soccer_position_array">
-        <item/>
+        <item />
         <item>Goalkeeper</item>
         <item>Center-Back</item>
         <item>Full-Back</item>
@@ -129,7 +129,7 @@
     </string-array>
     <!-- 10 positions-->
     <string-array name="soccer_position_abbrev">
-        <item/>
+        <item />
         <item>GK</item>
         <item>CB</item>
         <item>FB</item>
@@ -143,7 +143,7 @@
     </string-array>
 
     <string-array name="basket_position_array">
-        <item/>
+        <item />
         <item>Point Guard</item>
         <item>Shooting Guard</item>
         <item>Small Forward</item>
@@ -152,7 +152,7 @@
     </string-array>
     <!-- 5 positions-->
     <string-array name="basket_position_abbrev">
-        <item/>
+        <item />
         <item>PG</item>
         <item>SG</item>
         <item>SF</item>
@@ -161,7 +161,7 @@
     </string-array>
 
     <string-array name="hand_array">
-        <item/>
+        <item />
         <item>Right</item>
         <item>Left</item>
     </string-array>
@@ -199,4 +199,8 @@
     <string name="user_bd_eg">e.g.: 01/10/1987</string>
     <string name="user_height_eg">e.g.: 5\" 9\'</string>
     <string name="user_weight_eg">e.g.: 120 lbs</string>
+
+    <string name="title_activity_loading">LoadingActivity</string>
+    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
 </resources>
