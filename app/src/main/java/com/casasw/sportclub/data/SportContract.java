@@ -235,11 +235,11 @@ public class SportContract {
         static final String CONTENT_ITEM_TYPE =
                 ContentResolver.CURSOR_ITEM_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_SPORT;
 
-        static Uri buildSportUri() {
+        public static Uri buildSportUri() {
             return CONTENT_URI;
         }
 
-        static Uri buildSportWithIdUri(long id) {
+        public static Uri buildSportWithIdUri(long id) {
             return ContentUris.withAppendedId(CONTENT_URI, id);
         }
         static String getIdFromUri(Uri uri) {
@@ -313,6 +313,10 @@ public class SportContract {
             return uri.getPathSegments().get(uri.getPathSegments().size()-1);
         }
 
+        public static long getLongIdFromUri(Uri uri) {
+            return Long.parseLong(uri.getPathSegments().get(uri.getPathSegments().size()-1));
+        }
+
         public static final String TABLE_NAME = "player_sport";
 
         /*Player foreign key*/
@@ -321,7 +325,7 @@ public class SportContract {
         /*Sport foreign key*/
         public static final String COLUMN_SPORT_ID = "sport_id";
 
-        public static final String COLUMN_POSITIONS = "positions";
+        public static final String COLUMN_POSITION = "positions";
 
     }
 

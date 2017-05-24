@@ -113,7 +113,7 @@ public class TestUtilities {
             SportContract.SportsEntry.TABLE_NAME +
                     "." + SportContract.SportsEntry.COLUMN_STATUS,
             SportContract.PlayerSportEntry.TABLE_NAME +
-                    "." + SportContract.PlayerSportEntry.COLUMN_POSITIONS
+                    "." + SportContract.PlayerSportEntry.COLUMN_POSITION
 
     };
 
@@ -259,9 +259,10 @@ public class TestUtilities {
     
     static ContentValues createPlayerSportValues(long player_id, long sport_id) {
         ContentValues values = new ContentValues();
+        int random = (int) Math.floor(Math.random()*100);
         values.put(SportContract.PlayerSportEntry.COLUMN_PLAYER_ID, ""+player_id);
         values.put(SportContract.PlayerSportEntry.COLUMN_SPORT_ID, ""+sport_id);
-        values.put(SportContract.PlayerSportEntry.COLUMN_POSITIONS, "SA-CF");
+        values.put(SportContract.PlayerSportEntry.COLUMN_POSITION, "SA"+random);
 
         return values;
     }

@@ -38,7 +38,6 @@
     <!-- Strings related to Settings -->
 
 
-    
     <!-- Example General settings -->
     <string name="pref_header_general">General</string>
 
@@ -116,6 +115,7 @@
 
     <!--Spinner-->
     <string-array name="soccer_position_array">
+        <item/>
         <item>Goalkeeper</item>
         <item>Center-Back</item>
         <item>Full-Back</item>
@@ -129,6 +129,7 @@
     </string-array>
     <!-- 10 positions-->
     <string-array name="soccer_position_abbrev">
+        <item/>
         <item>GK</item>
         <item>CB</item>
         <item>FB</item>
@@ -142,6 +143,7 @@
     </string-array>
 
     <string-array name="basket_position_array">
+        <item/>
         <item>Point Guard</item>
         <item>Shooting Guard</item>
         <item>Small Forward</item>
@@ -150,6 +152,7 @@
     </string-array>
     <!-- 5 positions-->
     <string-array name="basket_position_abbrev">
+        <item/>
         <item>PG</item>
         <item>SG</item>
         <item>SF</item>
@@ -158,6 +161,7 @@
     </string-array>
 
     <string-array name="hand_array">
+        <item/>
         <item>Right</item>
         <item>Left</item>
     </string-array>
@@ -182,5 +186,17 @@
     <string name="format_date_mdy"><xliff:g id="month">%2</xliff:g>/<xliff:g id="day">%1</xliff:g>/<xliff:g id="year">%3</xliff:g></string>
     <string name="sports_positions_title">Sports and Positions</string>
     <string name="choose_a_sport_on_edit_profile">Choose a Sport on Edit Profile</string>
-    <string name="hand_default">Choose your hardness on Edit Profile</string>
+    <string name="hand_default">Choose your handness on Edit Profile</string>
+    <string name="title_activity_edit_profile">EditProfileActivity</string>
+
+    <string name="title_section1">Section 1</string>
+    <string name="title_section2">Section 2</string>
+    <string name="title_section3">Section 3</string>
+
+    <string name="action_example">Example action</string>
+    <string name="user_city_eg">Edit your city</string>
+    <string name="user_state_eg">Edit your state</string>
+    <string name="user_bd_eg">e.g.: 01/10/1987</string>
+    <string name="user_height_eg">e.g.: 5\" 9\'</string>
+    <string name="user_weight_eg">e.g.: 120 lbs</string>
 </resources>

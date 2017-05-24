@@ -279,11 +279,27 @@ public class DbTest {
         values = TestUtilities.createPlayerSportValues(in_player, in_sport);
         long in = db.insert(SportContract.PlayerSportEntry.TABLE_NAME, null, values);
         assertTrue("Error: Insertion in Player-Sport table has fail.", in != -1 );
-        Cursor cursor = db.query(SportContract.PlayerSportEntry.TABLE_NAME, null, null, null, null, null, null);
+        String selection = SportContract.PlayerSportEntry.TABLE_NAME + "." +
+                SportContract.PlayerSportEntry._ID + " = ?";
+        String[] selectionArgs = new String[]{""+in};
+        Cursor cursor = db.query(SportContract.PlayerSportEntry.TABLE_NAME, null,selection, selectionArgs, null, null, null);
         assertTrue("Error: PlayerSport table select has fail.",
                 cursor.moveToFirst());
         TestUtilities.validateCurrentRecord(
                 "Error: The returning cursor is not equals to ContentValues inserted.", cursor, values);
+
+        TestUtilities.logCursor(cursor, TAG);
+
+        values = TestUtilities.createPlayerSportValues(in_player, in_sport);
+        in = db.insert(SportContract.PlayerSportEntry.TABLE_NAME, null, values);
+        assertTrue("Error: Insertion in Player-Sport table has fail.", in != -1 );
+        selectionArgs = new String[]{""+in};
+        cursor = db.query(SportContract.PlayerSportEntry.TABLE_NAME, null,selection, selectionArgs, null, null, null);
+        assertTrue("Error: PlayerSport table select has fail.",
+                cursor.moveToFirst());
+        TestUtilities.validateCurrentRecord(
+                "Error: The returning cursor is not equals to ContentValues inserted.", cursor, values);
+        TestUtilities.logCursor(cursor, TAG);
 
         //update
         values.put(SportContract.PlayerSportEntry.COLUMN_PLAYER_ID, in_player);

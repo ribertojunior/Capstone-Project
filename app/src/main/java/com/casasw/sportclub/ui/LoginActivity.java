@@ -10,6 +10,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.casasw.sportclub.data.SportContract;
@@ -68,6 +69,14 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         View rootView = findViewById(android.R.id.content);
+        /*ImageView logoLoading = (ImageView) findViewById(R.id.logo_loading);
+        Animation animationOut = AnimationUtils.loadAnimation(this, R.anim.pop_out);
+        Animation animationIn = AnimationUtils.loadAnimation(this, R.anim.pop_in);
+        AnimationSet outIn = new AnimationSet(true);
+        outIn.addAnimation(animationOut);
+        outIn.addAnimation(animationIn);*/
+        //logoLoading.startAnimation(outIn);
+
         final ViewHolder viewHolder = new ViewHolder(rootView);
         OUT = false;
 
@@ -174,6 +183,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
             Toast.makeText(this, R.string.offline_error, Toast.LENGTH_LONG).show();
         }
 
+
         rootView.setTag(viewHolder);
     }
 
@@ -185,6 +195,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
             viewHolder.mGoogleBtn.setEnabled(true);
             viewHolder.mFacebookBtn.setEnabled(true);
         }
+
     }
 
     @Override
@@ -385,11 +396,13 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         final SignInButton mGoogleBtn;
         final LoginButton mFacebookBtn;
         final Button mSignOut;
+        final LinearLayout mLoginLayout;
 
         ViewHolder(View view){
             mGoogleBtn = (SignInButton) view.findViewById(R.id.sign_in_button);
             mFacebookBtn = (LoginButton) view.findViewById(R.id.login_button);
             mSignOut = (Button) view.findViewById(R.id.sign_out_button);
+            mLoginLayout = (LinearLayout) view.findViewById(R.id.login_container);
         }
     }
 }

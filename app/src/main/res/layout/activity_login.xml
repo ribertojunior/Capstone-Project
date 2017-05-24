@@ -11,27 +11,29 @@
 
     <android.support.v4.widget.Space
         android:layout_width="match_parent"
-        android:layout_height="@dimen/logo_bar_size"
-        />
+        android:layout_height="@dimen/logo_bar_size" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center">
+
         <LinearLayout
             android:layout_height="match_parent"
             android:layout_width="0dp"
             android:layout_weight="1"
             android:orientation="vertical">
+
             <View
                 android:id="@+id/logo_bar_left1"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/logo_bar_size"
                 android:background="@drawable/line" />
+
             <android.support.v4.widget.Space
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/logo_bar_size"
-                />
+                android:layout_height="@dimen/logo_bar_size" />
+
             <View
                 android:id="@+id/logo_bar_left2"
                 android:layout_width="match_parent"
@@ -50,15 +52,17 @@
             android:layout_width="0dp"
             android:layout_weight="1"
             android:orientation="vertical">
+
             <View
                 android:id="@+id/logo_bar_right1"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/logo_bar_size"
                 android:background="@drawable/line_right" />
+
             <android.support.v4.widget.Space
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/logo_bar_size"
-                />
+                android:layout_height="@dimen/logo_bar_size" />
+
             <View
                 android:id="@+id/logo_bar_right2"
                 android:layout_width="match_parent"
@@ -70,13 +74,14 @@
     <android.support.v4.widget.Space
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_weight="1"/>
+        android:layout_weight="1" />
 
     <com.google.android.gms.common.SignInButton
         android:id="@+id/sign_in_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"/>
+        android:layout_gravity="center_horizontal" />
+
     <com.facebook.login.widget.LoginButton
         android:id="@+id/login_button"
         android:layout_width="wrap_content"
@@ -85,6 +90,7 @@
         android:layout_marginTop="@dimen/facebook_button_margin"
         android:layout_marginBottom="@dimen/facebook_button_margin"
         android:elevation="@dimen/standard_elevation" />
+
     <Button
         android:layout_width="wrap_content"
         android:layout_height="30dp"
@@ -94,21 +100,24 @@
         android:text="@string/sign_out"
         android:elevation="@dimen/standard_elevation"
         android:visibility="invisible"
-        android:onClick="signOut"/>
+        android:onClick="signOut" />
+
     <android.support.v4.widget.Space
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_weight="1"/>
+        android:layout_weight="1" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:padding="@dimen/help_padding"
+        android:padding="@dimen/big_padding"
         android:text="@string/help_text"
         android:textAppearance="@style/Base.TextAppearance.AppCompat.Subhead"
         android:textStyle="bold"
         android:textColor="@color/colorPrimaryDark"
-        android:onClick="helpOnClick"
-         />
+        android:onClick="helpOnClick" />
 
 </LinearLayout>
+
+
+

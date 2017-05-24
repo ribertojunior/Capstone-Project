@@ -9,9 +9,15 @@
     <!--Login-->
     <dimen name="image_view_width">190dp</dimen>
     <dimen name="image_view_height">150dp</dimen>
-    <dimen name="name_version_padding">8dp</dimen>
+    <dimen name="medium_padding">8dp</dimen>
     <dimen name="facebook_button_margin">30dp</dimen>
-    <dimen name="help_padding">12dp</dimen>
+    <dimen name="big_padding">12dp</dimen>
     <dimen name="standard_elevation">4dp</dimen>
     <dimen name="logo_bar_size">50dp</dimen>
+    <dimen name="profile_image_size">100dp</dimen>
+    <dimen name="small_image_size">30dp</dimen>
+
+    <!-- Per the design guidelines, navigation drawers should be between 240dp and 320dp:
+         https://developer.android.com/design/patterns/navigation-drawer.html -->
+    <dimen name="navigation_drawer_width">240dp</dimen>
 </resources>

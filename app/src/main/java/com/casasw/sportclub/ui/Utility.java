@@ -13,6 +13,7 @@ import com.casasw.sportclub.data.SportContract;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created by Junior on 02/05/2017.
@@ -67,7 +68,7 @@ class Utility {
         ContentValues values = new ContentValues();
         values.put(SportContract.PlayerSportEntry.COLUMN_PLAYER_ID, ""+player_id);
         values.put(SportContract.PlayerSportEntry.COLUMN_SPORT_ID, ""+sport_id);
-        values.put(SportContract.PlayerSportEntry.COLUMN_POSITIONS, "");
+        values.put(SportContract.PlayerSportEntry.COLUMN_POSITION, "");
 
         return values;
     }
@@ -96,6 +97,13 @@ class Utility {
 
         return listPos.get(i);
     }
+    static String getSoccerPositionAbbrev(String position, Context context){
+        final List<String> listPosAbbrev = Arrays.asList(context.getResources().getStringArray(R.array.soccer_position_abbrev));
+        List<String> listPos = Arrays.asList(context.getResources().getStringArray(R.array.soccer_position_array));
+        int i = listPos.indexOf(position);
+
+        return listPosAbbrev.get(i);
+    }
 
     static String getBasketPosition(String posAbbrev, Context context) {
         final List<String> listPosAbbrev = Arrays.asList(context.getResources().getStringArray(R.array.basket_position_abbrev));
@@ -103,5 +111,41 @@ class Utility {
         int i = listPosAbbrev.indexOf(posAbbrev);
 
         return listPos.get(i);
+    }
+
+    static String getBasketPositionAbbrev(String position, Context context) {
+        final List<String> listPosAbbrev = Arrays.asList(context.getResources().getStringArray(R.array.basket_position_abbrev));
+        List<String> listPos = Arrays.asList(context.getResources().getStringArray(R.array.basket_position_array));
+        int i = listPos.indexOf(position);
+
+        return listPosAbbrev.get(i);
+    }
+
+    static String getSportID(Context context, String sport){
+        String selection = SportContract.SportsEntry.TABLE_NAME + "." +
+                SportContract.SportsEntry.COLUMN_NAME + " = ?";
+        String[] selectionArgs = new String[]{sport};
+        Cursor c = context.getContentResolver().query(SportContract.SportsEntry.buildSportUri(),null, selection, selectionArgs, null, null);
+        String ret = "error";
+        if (c != null && c.moveToFirst()) {
+            if (BuildConfig.DEBUG) {
+                logCursor(c, "Utility");
+                c.moveToFirst();
+            }
+            ret = c.getString(c.getColumnIndex(SportContract.SportsEntry._ID));
+            c.close();
+        }
+
+        return ret;
+    }
+
+    static void logContentValues(ContentValues cv, String TAG) {
+        Set<String> keys = cv.keySet();
+        String values = "";
+        for (String key :
+                keys) {
+            values = values + key + " - " + cv.getAsString(key) + "\n";
+        }
+        Log.d(TAG, "logContentValues: \n" + values);
     }
 }

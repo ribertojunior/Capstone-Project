@@ -10,7 +10,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
@@ -48,6 +47,10 @@ import com.github.mikephil.charting.interfaces.datasets.IRadarDataSet;
 
 import java.util.ArrayList;
 
+import static com.casasw.sportclub.ui.LoginActivity.EXTRA_EMAIL;
+import static com.casasw.sportclub.ui.LoginActivity.EXTRA_NAME;
+import static com.casasw.sportclub.ui.LoginActivity.EXTRA_PHOTO;
+import static com.casasw.sportclub.ui.LoginActivity.EXTRA_URI;
 import static com.casasw.sportclub.ui.R.menu.profile;
 
 public class ProfileActivity extends AppCompatActivity
@@ -99,7 +102,7 @@ public class ProfileActivity extends AppCompatActivity
             SportContract.SportsEntry.TABLE_NAME +
                     "." + SportContract.SportsEntry.COLUMN_STATUS,
             SportContract.PlayerSportEntry.TABLE_NAME +
-                    "." + SportContract.PlayerSportEntry.COLUMN_POSITIONS
+                    "." + SportContract.PlayerSportEntry.COLUMN_POSITION
 
     };
 
@@ -140,8 +143,14 @@ public class ProfileActivity extends AppCompatActivity
         floatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                Intent intent = new Intent(view.getContext(), EditProfileActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putString(EXTRA_NAME, mName);
+                bundle.putString(EXTRA_EMAIL, mEmail);
+                bundle.putParcelable(EXTRA_URI, mUri);
+                bundle.putParcelable(EXTRA_PHOTO,mPhotoURL);
+                intent.putExtras(bundle);
+                startActivity(intent);
             }
         });
 
@@ -157,18 +166,18 @@ public class ProfileActivity extends AppCompatActivity
         View header = navigationView.getHeaderView(0);
 
         Bundle bundle = getIntent().getExtras();
-        mUri = bundle.getParcelable(LoginActivity.EXTRA_URI);
+        mUri = bundle.getParcelable(EXTRA_URI);
         boolean update = false;
-        if (mPhotoURL == null || !mPhotoURL.equals(bundle.getString(LoginActivity.EXTRA_PHOTO))) {
-            mPhotoURL = bundle.getParcelable(LoginActivity.EXTRA_PHOTO);
+        if (mPhotoURL == null || !mPhotoURL.equals(bundle.getString(EXTRA_PHOTO))) {
+            mPhotoURL = bundle.getParcelable(EXTRA_PHOTO);
             update = true;
         }
-        if (mName == null || !mName.equals(bundle.getString(LoginActivity.EXTRA_NAME))) {
-            mName = bundle.getString(LoginActivity.EXTRA_NAME);
+        if (mName == null || !mName.equals(bundle.getString(EXTRA_NAME))) {
+            mName = bundle.getString(EXTRA_NAME);
             update = true;
         }
-        if (mEmail == null || !mEmail.equals(bundle.getString(LoginActivity.EXTRA_EMAIL))) {
-            mEmail = bundle.getString(LoginActivity.EXTRA_EMAIL);
+        if (mEmail == null || !mEmail.equals(bundle.getString(EXTRA_EMAIL))) {
+            mEmail = bundle.getString(EXTRA_EMAIL);
             update = true;
         }
         //update name and photo
@@ -288,7 +297,15 @@ public class ProfileActivity extends AppCompatActivity
 
         switch (id) {
             case  R.id.nav_edit:
-                intent = new Intent(this, SettingsActivity.class); break;
+                intent = new Intent(this, EditProfileActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putString(EXTRA_NAME, mName);
+                bundle.putString(EXTRA_EMAIL, mEmail);
+                bundle.putParcelable(EXTRA_URI, mUri);
+                bundle.putParcelable(EXTRA_PHOTO,mPhotoURL);
+                intent.putExtras(bundle);
+                startActivity(intent);
+                break;
             case R.id.nav_preferrences:
                 intent = new Intent(this, SettingsActivity.class); break;
             case R.id.nav_help:
@@ -318,7 +335,7 @@ public class ProfileActivity extends AppCompatActivity
                 data.moveToFirst();
                 Log.d(TAG, "onLoadFinished: "+ data.getPosition());
             }
-            ViewHolder viewHolder = new ViewHolder(findViewById(android.R.id.content));
+            ViewHolder viewHolder = (ViewHolder) findViewById(android.R.id.content).getTag();
 
             viewHolder.mTextRating.setText(getString(R.string.format_rate,data.getFloat(COL_PLAYER_RATING)));
 
@@ -337,10 +354,10 @@ public class ProfileActivity extends AppCompatActivity
             TextView textView2;
             String aux[][] = new String[][]{
                     {""},
-                    {"Edit your city", "Edit your state"},
-                    {"e.g.: 01/10/1987"},
-                    {"e.g.: 5\" 9\'"},
-                    {"e.g.: 120 lbs"}};
+                    {getString(R.string.user_city_eg), getString(R.string.user_state_eg)},
+                    {getString(R.string.user_bd_eg)},
+                    {getString(R.string.user_height_eg)},
+                    {getString(R.string.user_weight_eg)}};
             String text;
             for (int i=0;i<5;i++) {
                 item = LayoutInflater
@@ -363,7 +380,7 @@ public class ProfileActivity extends AppCompatActivity
                 viewHolder.mImageTextContainer.addView(item);
             }
 
-            viewHolder.mImageViewCheck.setBackground(getResources().getDrawable(R.drawable.ic_action_ball));
+
             do{
                 String sport = data.getString(COL_SPORTS_NAME);
                 String pos; String[] posV;
@@ -373,24 +390,26 @@ public class ProfileActivity extends AppCompatActivity
                         viewHolder.mNoSport.setVisibility(View.GONE);
                         viewHolder.mTextViewSoccer.setVisibility(View.VISIBLE);
                         pos = data.getString(COL_SPORTS_POSITION);
-                        posV = pos.split("-");
                         viewHolder.mTextViewSoccerPos.setVisibility(View.VISIBLE);
-                        viewHolder.mTextViewSoccerPos.setText(Utility.getSoccerPosition(posV[0], this));
-                        viewHolder.mTextViewSoccerPos2.setVisibility(View.VISIBLE);
-                        if (posV.length==2)
-                            viewHolder.mTextViewSoccerPos2.setText(Utility.getSoccerPosition(posV[1], this));
+                        if (viewHolder.mTextViewSoccerPos.getText().equals("")) {
+                            viewHolder.mTextViewSoccerPos.setText(pos);
+                        } else {
+                            viewHolder.mTextViewSoccerPos2.setVisibility(View.VISIBLE);
+                            viewHolder.mTextViewSoccerPos2.setText(pos);
+                        }
                         //text position visibility
                         break;
                     case "Basketball":
                         viewHolder.mNoSport.setVisibility(View.GONE);
                         viewHolder.mTextViewBasket.setVisibility(View.VISIBLE);
                         pos = data.getString(COL_SPORTS_POSITION);
-                        posV = pos.split("-");
                         viewHolder.mTextViewBasketPos.setVisibility(View.VISIBLE);
-                        viewHolder.mTextViewBasketPos.setText(Utility.getBasketPosition(posV[0], this));
-                        viewHolder.mTextViewBasketPos2.setVisibility(View.VISIBLE);
-                        if (posV.length==2)
-                            viewHolder.mTextViewBasketPos2.setText(Utility.getBasketPosition(posV[1], this));
+                        if (viewHolder.mTextViewBasketPos.getText().equals("")) {
+                            viewHolder.mTextViewBasketPos.setText(pos);
+                        } else {
+                            viewHolder.mTextViewBasketPos2.setVisibility(View.VISIBLE);
+                            viewHolder.mTextViewBasketPos2.setText(pos);
+                        }
                         break;
                 }
             }while (data.moveToNext());
@@ -411,7 +430,7 @@ public class ProfileActivity extends AppCompatActivity
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             viewHolder.mTextViewHand.setAdapter(adapter);*/
             // I need to check which one is selected
-            viewHolder.mImageViewHand.setBackground(getResources().getDrawable(R.drawable.ic_pan_tool));
+
             String hand = data.getString(COL_PLAYER_HAND);
             if (hand.trim().equals(""))
                 hand = getString(R.string.hand_default);
@@ -580,7 +599,6 @@ public class ProfileActivity extends AppCompatActivity
         final ImageView mImageStarRating;
         final TextView mTextRating;
         final LinearLayout mImageTextContainer;
-        final ImageView mImageViewCheck;
         final TextView mNoSport;
         final TextView mTextViewSoccer;
         final TextView mTextViewBasket;
@@ -588,7 +606,6 @@ public class ProfileActivity extends AppCompatActivity
         final TextView mTextViewSoccerPos2;
         final TextView mTextViewBasketPos;
         final TextView mTextViewBasketPos2;
-        final ImageView mImageViewHand;
         final TextView mTextViewHand;
         final LinearLayout mAttributes;
         final RadarChart mRadar;
@@ -600,7 +617,6 @@ public class ProfileActivity extends AppCompatActivity
             mImageStarRating = (ImageView) view.findViewById(R.id.image_view_star);
             mTextRating = (TextView) view.findViewById(R.id.text_view_rating);
             mImageTextContainer = (LinearLayout) view.findViewById(R.id.image_text_container);
-            mImageViewCheck = (ImageView) view.findViewById(R.id.image_view_item_check);
             mNoSport = (TextView) view.findViewById(R.id.text_view_no_sport);
             mTextViewSoccer = (TextView) view.findViewById(R.id.text_view_soccer);
             mTextViewBasket = (TextView) view.findViewById(R.id.text_view_basket);
@@ -608,7 +624,6 @@ public class ProfileActivity extends AppCompatActivity
             mTextViewSoccerPos2 = (TextView) view.findViewById(R.id.text_view_soccer_pos2);
             mTextViewBasketPos = (TextView) view.findViewById(R.id.text_view_basket_pos1);
             mTextViewBasketPos2 = (TextView) view.findViewById(R.id.text_view_basket_pos2);
-            mImageViewHand = (ImageView) view.findViewById(R.id.image_view_item_hand);
             mTextViewHand = (TextView) view.findViewById(R.id.text_view_hand);
             mAttributes = (LinearLayout) view.findViewById(R.id.list_attributes);
             mRadar = (RadarChart) view.findViewById(R.id.radar_item);

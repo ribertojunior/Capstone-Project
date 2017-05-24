@@ -123,11 +123,14 @@ public class SportDbHelper extends SQLiteOpenHelper {
                 SportContract.PlayerSportEntry._ID + " INTEGER PRIMARY KEY , " +
                 SportContract.PlayerSportEntry.COLUMN_PLAYER_ID + " INTEGER NOT NULL, " +
                 SportContract.PlayerSportEntry.COLUMN_SPORT_ID + " INTEGER NOT NULL, " +
-                SportContract.PlayerSportEntry.COLUMN_POSITIONS + " TEXT NOT NULL, " +
+                SportContract.PlayerSportEntry.COLUMN_POSITION + " TEXT NOT NULL, " +
                 "FOREIGN KEY ("+ SportContract.PlayerSportEntry.COLUMN_PLAYER_ID +") REFERENCES " +
                 SportContract.PlayerEntry.TABLE_NAME + " (" + SportContract.PlayerEntry._ID +"), " +
                 "FOREIGN KEY ("+ SportContract.PlayerSportEntry.COLUMN_SPORT_ID +") REFERENCES " +
-                SportContract.SportsEntry.TABLE_NAME + " (" + SportContract.SportsEntry._ID +")); ";
+                SportContract.SportsEntry.TABLE_NAME + " (" + SportContract.SportsEntry._ID +
+                ") UNIQUE ("+ SportContract.PlayerSportEntry.COLUMN_PLAYER_ID +
+                "," + SportContract.PlayerSportEntry.COLUMN_POSITION +
+                ") ON CONFLICT REPLACE); ";
         if (BuildConfig.DEBUG) {
             Log.d(TAG, "onCreate: player sport table: \n"+SQL_CREATE_PLAYER_SPORT_TABLE);
         }
